@@ -42,7 +42,7 @@ jobs:
           commit_user_email: "github-actions[bot]@users.noreply.github.com"
           commit_author: "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
   build:
-    if: "'$(basename -s .git $(git remote get-url origin))' != 'quartz-themes-preview-template'"
+    if: $(echo ${{ github.repository }} != "quartz-themes-preview-template")
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
