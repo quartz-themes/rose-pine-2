@@ -31,12 +31,16 @@ jobs:
         if: ${{ github.event.repository.name }} == "quartz-themes-preview-template"
         run: |
           git config pull.rebase false
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
           git remote add upstream https://github.com/jackyzha0/quartz.git
           git pull upstream v4 --allow-unrelated-histories
       - name: Update Quartz (preview)
         if: ${{ github.event.repository.name }} != "quartz-themes-preview-template"
         run: |
           git config pull.rebase false
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
           git remote add upstream https://https://github.com/quartz-themes/quartz-themes-preview-template.git
           git pull upstream v4 --allow-unrelated-histories
       - name: Push updates
@@ -44,7 +48,7 @@ jobs:
         with:
           skip_fetch: true
           skip_dirty_check: false
-          commit_message: "[ci] flakes: auto-updated"
+          commit_message: "[ci] quartz-themes: auto-updated"
           commit_user_name: "github-actions[bot]"
           commit_user_email: "github-actions[bot]@users.noreply.github.com"
           commit_author: "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
