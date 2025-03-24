@@ -18,7 +18,31 @@ concurrency:
   cancel-in-progress: false
  
 jobs:
+  update:
+    if: github.repository == "quartz-themes/quartz-themes-preview-template"
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetch all history for git info
+      - name: Update Quartz
+        run: |
+          git config pull.rebase >&- || git config pull.rebase false
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git config remote.upstream.url >&- || git remote add upstream https://github.com/jackyzha0/quartz.git
+          git pull upstream v4 --allow-unrelated-histories
+      - name: Push updates
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          skip_fetch: true
+          skip_dirty_check: false
+          commit_message: "[ci] quartz: auto-updated"
+          commit_user_name: "github-actions[bot]"
+          commit_user_email: "github-actions[bot]@users.noreply.github.com"
+          commit_author: "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
   build:
+    if: github.repository != "quartz-themes/quartz-themes-preview-template"
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
@@ -27,21 +51,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Update Quartz (template)
-        if: ${{ github.repository }} == "quartz-themes/quartz-themes-preview-template"
-        run: |
-          git config pull.rebase false
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "github-actions[bot]"
-          git remote add upstream https://github.com/jackyzha0/quartz.git
-          git pull upstream v4 --allow-unrelated-histories
-      - name: Update Quartz (preview)
+      - name: Update Quartz
         if: ${{ github.repository }} != "quartz-themes/quartz-themes-preview-template"
         run: |
-          git config pull.rebase false
+          git config pull.rebase >&- || git config pull.rebase false
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
-          git remote add upstream https://https://github.com/quartz-themes/quartz-themes-preview-template.git
+          git config remote.upstream.url >&- || git remote add upstream https://github.com/quartz-themes/quartz-themes-preview-template.git
           git pull upstream v4 --allow-unrelated-histories
       - name: Push updates
         uses: stefanzweifel/git-auto-commit-action@v4
