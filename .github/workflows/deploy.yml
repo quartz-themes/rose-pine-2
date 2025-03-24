@@ -19,7 +19,7 @@ concurrency:
  
 jobs:
   update:
-    if: basename -s .git $(git remote get-url origin) == quartz-themes-preview-template
+    if: $(basename -s .git $(git remote get-url origin)) == quartz-themes-preview-template
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
