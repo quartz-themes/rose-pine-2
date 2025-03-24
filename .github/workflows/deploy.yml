@@ -33,7 +33,7 @@ jobs:
           git config remote.upstream.url >&- || git remote add upstream https://github.com/jackyzha0/quartz.git
           git pull upstream v4 --allow-unrelated-histories
       - name: Push updates
-        uses: stefanzweifel/git-auto-commit-action@v4
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
           skip_fetch: false
           skip_dirty_check: false
@@ -59,9 +59,9 @@ jobs:
           git config remote.template.url >&- || git remote add template https://github.com/quartz-themes/quartz-themes-preview-template.git
           git pull template v4 --allow-unrelated-histories
       - name: Push updates
-        uses: stefanzweifel/git-auto-commit-action@v4
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          skip_fetch: true
+          skip_fetch: false
           skip_dirty_check: false
           commit_message: "[ci] quartz-themes: auto-updated"
           commit_user_name: "github-actions[bot]"
