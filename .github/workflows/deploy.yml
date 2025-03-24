@@ -30,11 +30,13 @@ jobs:
       - name: Update Quartz (template)
         if: ${{ github.event.repository.name }} == "quartz-themes-preview-template"
         run: |
+          git config pull.rebase false
           git remote add upstream https://github.com/jackyzha0/quartz.git
           git pull upstream v4
       - name: Update Quartz (preview)
         if: ${{ github.event.repository.name }} != "quartz-themes-preview-template"
         run: |
+          git config pull.rebase false
           git remote add upstream https://https://github.com/quartz-themes/quartz-themes-preview-template.git
           git pull upstream v4
       - name: Push updates
