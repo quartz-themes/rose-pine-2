@@ -27,9 +27,29 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Update Quartz (template)
+        if: ${{ github.event.repository.name == "quartz-themes-preview-template" }}
+        run: |
+          git remote add upstream https://github.com/jackyzha0/quartz.git
+          git pull upstream v4
+      - name: Update Quartz (preview)
+        if: ${{ github.event.repository.name != "quartz-themes-preview-template" }}
+        run: |
+          git remote add upstream https://https://github.com/quartz-themes/quartz-themes-preview-template.git
+          git pull upstream v4
+      - name: Push updates
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          skip_fetch: true
+          skip_dirty_check: false
+          commit_message: "[ci] flakes: auto-updated"
+          commit_user_name: "github-actions[bot]"
+          commit_user_email: "github-actions[bot]@users.noreply.github.com"
+          commit_author: "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
       - name: Install Dependencies
         run: npm ci
       - name: Fetch Quartz Theme
+        if: ${{ github.event.repository.name != "quartz-themes-preview-template" }}
         run: curl -s -S https://raw.githubusercontent.com/saberzero1/quartz-themes/master/action.sh | bash -s -- ${{ github.event.repository.name }}
       - name: Build Quartz Docs
         run: npx quartz build -d docs
