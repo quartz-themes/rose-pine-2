@@ -19,7 +19,7 @@ concurrency:
  
 jobs:
   update:
-    if: ${{ github.repository == 'quartz-themes-preview-template' }}
+    if: ${{ github.repository == 'quartz-themes/quartz-themes-preview-template' }}
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
