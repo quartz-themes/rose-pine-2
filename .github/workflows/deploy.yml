@@ -28,12 +28,12 @@ jobs:
         with:
           node-version: 22
       - name: Update Quartz (template)
-        if: ${{ github.event.repository.name == "quartz-themes-preview-template" }}
+        if: ${{ github.event.repository.name }} == "quartz-themes-preview-template"
         run: |
           git remote add upstream https://github.com/jackyzha0/quartz.git
           git pull upstream v4
       - name: Update Quartz (preview)
-        if: ${{ github.event.repository.name != "quartz-themes-preview-template" }}
+        if: ${{ github.event.repository.name }} != "quartz-themes-preview-template"
         run: |
           git remote add upstream https://https://github.com/quartz-themes/quartz-themes-preview-template.git
           git pull upstream v4
@@ -49,7 +49,7 @@ jobs:
       - name: Install Dependencies
         run: npm ci
       - name: Fetch Quartz Theme
-        if: ${{ github.event.repository.name != "quartz-themes-preview-template" }}
+        if: ${{ github.event.repository.name }} != "quartz-themes-preview-template"
         run: curl -s -S https://raw.githubusercontent.com/saberzero1/quartz-themes/master/action.sh | bash -s -- ${{ github.event.repository.name }}
       - name: Build Quartz Docs
         run: npx quartz build -d docs
