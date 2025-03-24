@@ -19,7 +19,7 @@ concurrency:
  
 jobs:
   update:
-    if: $(echo ${{ github.repository }} == "quartz-themes-preview-template")
+    if: $(echo ${{ github.repository }} == quartz-themes-preview-template)
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
@@ -42,7 +42,7 @@ jobs:
           commit_user_email: "github-actions[bot]@users.noreply.github.com"
           commit_author: "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
   build:
-    if: $(echo ${{ github.repository }} != "quartz-themes-preview-template")
+    if: $(echo ${{ github.repository }} != quartz-themes-preview-template)
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
@@ -56,8 +56,8 @@ jobs:
           git config pull.rebase >&- || git config pull.rebase false
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
-          git config remote.upstream.url >&- || git remote add upstream https://github.com/quartz-themes/quartz-themes-preview-template.git
-          git pull upstream v4 --allow-unrelated-histories
+          git config remote.template.url >&- || git remote add template https://github.com/quartz-themes/quartz-themes-preview-template.git
+          git pull template v4 --allow-unrelated-histories
       - name: Push updates
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
