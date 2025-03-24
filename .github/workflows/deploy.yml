@@ -19,7 +19,7 @@ concurrency:
  
 jobs:
   update:
-    if: ${{ github.repository }} == "quartz-themes/quartz-themes-preview-template"
+    if: "github.repository == quartz-themes/quartz-themes-preview-template"
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
@@ -42,7 +42,7 @@ jobs:
           commit_user_email: "github-actions[bot]@users.noreply.github.com"
           commit_author: "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
   build:
-    if: ${{ github.repository }} != "quartz-themes/quartz-themes-preview-template"
+    if: "github.repository != quartz-themes/quartz-themes-preview-template"
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
@@ -52,7 +52,6 @@ jobs:
         with:
           node-version: 22
       - name: Update Quartz
-        if: ${{ github.repository }} != "quartz-themes/quartz-themes-preview-template"
         run: |
           git config pull.rebase >&- || git config pull.rebase false
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
@@ -71,7 +70,6 @@ jobs:
       - name: Install Dependencies
         run: npm ci
       - name: Fetch Quartz Theme
-        if: ${{ github.repository }} != "quartz-themes/quartz-themes-preview-template"
         run: curl -s -S https://raw.githubusercontent.com/saberzero1/quartz-themes/master/action.sh | bash -s -- ${{ github.event.repository.name }}
       - name: Build Quartz Docs
         run: npx quartz build -d docs
