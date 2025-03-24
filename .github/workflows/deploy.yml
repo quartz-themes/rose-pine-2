@@ -35,7 +35,7 @@ jobs:
       - name: Push updates
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          skip_fetch: true
+          skip_fetch: false
           skip_dirty_check: false
           commit_message: "[ci] quartz: auto-updated"
           commit_user_name: "github-actions[bot]"
