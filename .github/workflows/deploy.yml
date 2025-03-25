@@ -55,7 +55,7 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
           git config remote.template.url >&- || git remote add template https://github.com/quartz-themes/quartz-themes-preview-template.git
-          git pull -s recursive -X theirs template v4 --allow-unrelated-histories
+          git pull -X theirs template v4 --allow-unrelated-histories
       - name: Push updates
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
