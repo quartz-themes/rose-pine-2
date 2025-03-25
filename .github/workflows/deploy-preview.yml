@@ -9,7 +9,7 @@ on:
       - v4
  
 permissions:
-  contents: write
+  contents: read
   pages: write
   id-token: write
  
@@ -35,7 +35,15 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config remote.template.url >&- || git remote add template https://github.com/quartz-themes/quartz-themes-preview-template.git
           git pull -X theirs template v4 --allow-unrelated-histories --no-edit
-          git push
+      - name: Push updates
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          skip_fetch: false
+          skip_dirty_check: false
+          commit_message: "[ci] quartz-themes: auto-updated"
+          commit_user_name: "github-actions[bot]"
+          commit_user_email: "github-actions[bot]@users.noreply.github.com"
+          commit_author: "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
       - name: Install Dependencies
         run: npm ci
       - name: Fetch Quartz Theme
