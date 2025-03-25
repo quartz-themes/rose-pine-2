@@ -3,19 +3,19 @@ name: Deploy Quart Themes preview to GitHub Pages
 on:
   workflow_dispatch:
   schedule:
-    - cron: "40 */4 * * *"
+    - cron: "40 */1 * * *"
   push:
     branches:
       - v4
  
 permissions:
-  contents: write
+  contents: read
   pages: write
   id-token: write
  
 concurrency:
   group: "pages"
-  cancel-in-progress: true
+  cancel-in-progress: false
  
 jobs:
   build:
@@ -35,25 +35,21 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config remote.template.url >&- || git remote add template https://github.com/quartz-themes/quartz-themes-preview-template.git
           git pull -X theirs template v4 --allow-unrelated-histories --no-edit
-          git push
+      - name: Push updates
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          skip_fetch: false
+          skip_dirty_check: false
+          commit_message: "[ci] quartz-themes: auto-updated"
+          commit_user_name: "github-actions[bot]"
+          commit_user_email: "github-actions[bot]@users.noreply.github.com"
+          commit_author: "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
       - name: Install Dependencies
-        uses: nick-fields/retry@v3
-        with:
-          command: npm ci
-          timeout_minutes: 10
-          max_attempts: 3
+        run: npm ci
       - name: Fetch Quartz Theme
-        uses: nick-fields/retry@v3
-        with:
-          command: curl -s -S https://raw.githubusercontent.com/saberzero1/quartz-themes/master/action.sh | bash -s -- ${{ github.event.repository.name }}
-          timeout_minutes: 10
-          max_attempts: 3
+        run: curl -s -S https://raw.githubusercontent.com/saberzero1/quartz-themes/master/action.sh | bash -s -- ${{ github.event.repository.name }}
       - name: Build Quartz Docs
-        uses: nick-fields/retry@v3
-        with:
-          command: npx quartz build -d docs
-          timeout_minutes: 10
-          max_attempts: 3
+        run: npx quartz build -d docs
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
