@@ -1,4 +1,4 @@
-name: Deploy Quartz site to GitHub Pages
+name: Update Quartz
  
 on:
   workflow_dispatch:
