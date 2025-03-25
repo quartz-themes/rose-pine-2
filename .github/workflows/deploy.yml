@@ -33,12 +33,14 @@ jobs:
           git config remote.upstream.url >&- || git remote add upstream https://github.com/jackyzha0/quartz.git
           git pull upstream v4 --allow-unrelated-histories
       - name: Push updates
-        uses: EndBug/add-and-commit@v9
+        uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          message: "[ci] quartz: auto-updated"
-          committer_name: "github-actions[bot]"
-          committer_email: "github-actions[bot]@users.noreply.github.com"
-          default_author: github_actor
+          skip_fetch: true
+          skip_dirty_check: false
+          commit_message: "[ci] quartz: auto-updated"
+          commit_user_name: "github-actions[bot]"
+          commit_user_email: "github-actions[bot]@users.noreply.github.com"
+          commit_author: "github-actions[bot] <github-actions[bot]@users.noreply.github.com>"
   build:
     if: ${{ github.repository != 'quartz-themes/quartz-themes-preview-template' }}
     runs-on: ubuntu-22.04
@@ -55,11 +57,11 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
           git config remote.template.url >&- || git remote add template https://github.com/quartz-themes/quartz-themes-preview-template.git
-          git pull -X theirs template v4 --allow-unrelated-histories --no-edit
+          git pull template v4 --allow-unrelated-histories
       - name: Push updates
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          skip_fetch: false
+          skip_fetch: true
           skip_dirty_check: false
           commit_message: "[ci] quartz-themes: auto-updated"
           commit_user_name: "github-actions[bot]"
