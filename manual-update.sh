@@ -1,7 +1,7 @@
-#!/usr/bin/env bash
+#!/bin/bash
 # Just in case
 
-declare -a small=("testing-environment")
+declare -a small=("80s-neon")
 
 declare -a themes=(
   "80s-neon"
@@ -12,10 +12,8 @@ declare -a themes=(
   "adrenaline"
   "adwaita"
   "agate"
-  "aged-whisky"
   "al-dente"
   "allium"
-  "amoled-serenity"
   "anuppuccin"
   "apatheia"
   "apex"
@@ -38,7 +36,6 @@ declare -a themes=(
   "blue-topaz"
   "bolt"
   "border"
-  "borealis"
   "bossidian"
   "brainhack"
   "brutalism"
@@ -59,12 +56,10 @@ declare -a themes=(
   "comfort-color-dark"
   "comfort-dark"
   "comfort-smooth"
-  "composer"
-  "consolas"
+  "comfort"
   "covert"
   "creature"
   "creme-brulee"
-  "cupertino"
   "cyber-glow"
   "cybertron"
   "cybertron-shifted"
@@ -95,26 +90,20 @@ declare -a themes=(
   "ebullientworks"
   "eldritch"
   "elegance"
-  "emerald-echo"
   "encore"
   "enhanced-file-explorer-tree"
   "ethereon"
-  "evangelion"
   "everblush"
   "everforest"
   "everforest-enchanted"
   "evergreen-shadow"
   "evilred"
   "faded"
-  "fancy-a-story"
-  "fastppuccin"
   "feather"
   "firefly"
-  "flexcyon"
   "flexoki"
   "flexoki-warm"
   "focus"
-  "frost"
   "fusion"
   "garden-gnome-adwaita-gtk"
   "gdct"
@@ -122,11 +111,9 @@ declare -a themes=(
   "github-theme"
   "githubdhc"
   "gitsidian"
-  "glass-robo"
   "golden-topaz"
   "green-nightmare"
   "gummy-revived"
-  "hackthebox"
   "halcyon"
   "handwriting-kalam"
   "heboric"
@@ -137,7 +124,6 @@ declare -a themes=(
   "ib-writer"
   "iceberg"
   "improved-potato"
-  "ink"
   "ion"
   "its-theme"
   "jotter"
@@ -146,11 +132,9 @@ declare -a themes=(
   "kanagawa-paper"
   "kiwi-mono"
   "kurokula"
-  "lagom"
   "latex"
   "lavender-mist"
   "lemons-theme"
-  "lesswrong"
   "light-bright"
   "listive"
   "lorens"
@@ -161,20 +145,13 @@ declare -a themes=(
   "magicuser"
   "mammoth"
   "maple"
-  "marathon"
-  "material-3"
   "material-flat"
   "material-gruvbox"
   "material-ocean"
   "meridian"
   "micro-mike"
   "midnight"
-  "midnight-fjord"
-  "minimal"
-  "minimal-dark-coder"
-  "minimal-dracula"
   "minimal-edge"
-  "minimal-red"
   "minimal-resources"
   "mint-breeze"
   "mistymauve"
@@ -183,7 +160,6 @@ declare -a themes=(
   "monochroyou"
   "monokai"
   "moonlight"
-  "mulled-wine"
   "muted-blue"
   "myst"
   "nebula"
@@ -191,8 +167,6 @@ declare -a themes=(
   "neon-synthwave"
   "neovim"
   "neuborder"
-  "neumorphism"
-  "neutral-academia"
   "nier"
   "nightfox"
   "nightingale"
@@ -207,22 +181,15 @@ declare -a themes=(
   "obsidian-gruvbox"
   "obsidian-nord"
   "obsidian_ia"
-  "obsidian_vibrant"
   "obsidianite"
   "obsidianotion"
   "obuntu"
   "oistnb"
-  "old-world"
   "oldsidian-purple"
-  "oledblack"
   "oliviers-theme"
-  "onenice"
   "ono-sendai"
-  "orange"
   "oreo"
-  "origami"
   "origin"
-  "overcast"
   "pale"
   "panic-mode"
   "parfait"
@@ -232,8 +199,6 @@ declare -a themes=(
   "pine-forest-berry"
   "pink-topaz"
   "pisum"
-  "planetary"
-  "playground"
   "pln"
   "poimandres"
   "polka"
@@ -253,10 +218,8 @@ declare -a themes=(
   "qlean"
   "quillcode"
   "red-graphite"
-  "red-shadow"
   "refined-default"
   "reshi"
-  "retro-windows"
   "retronotes"
   "retroos-98"
   "reverie"
@@ -264,13 +227,12 @@ declare -a themes=(
   "ribbons"
   "rift"
   "rmaki"
+  "rose-pine-moon"
   "rose-pine"
   "rose-pine-2"
   "rose-pine-moon"
   "rose-red"
   "royal-velvet"
-  "sad-machine-druid"
-  "sakurajima"
   "salem"
   "sanctum"
   "sanctum-reborn"
@@ -279,18 +241,13 @@ declare -a themes=(
   "sanguine"
   "sea-glass"
   "seamless-view"
-  "sei"
-  "serenity"
-  "serif"
   "serika"
   "shade-sanctuary"
-  "shadeflow"
   "shiba-inu"
   "shimmering-focus"
   "simple"
   "simple-color"
   "simplicity"
-  "simply-colorful"
   "sodalite"
   "solarized"
   "soli-deo-gloria"
@@ -308,7 +265,7 @@ declare -a themes=(
   "strict"
   "subtlegold"
   "suddha"
-  "sunbather"
+  "synthwave-84"
   "synthwave"
   "synthwave-84"
   "terminal"
@@ -325,7 +282,6 @@ declare -a themes=(
   "toms-theme"
   "trace-labs"
   "transient"
-  "transparent"
   "typewriter"
   "typomagical"
   "typora-vue"
@@ -339,33 +295,26 @@ declare -a themes=(
   "vauxhall"
   "velvet-moon"
   "venom"
-  "vercel-geist"
-  "vesper"
-  "vibrant"
   "vicious"
   "violet-evening"
   "virgo"
-  "vortex"
   "w95"
   "wasp"
-  "wikipedia"
   "wilcoxone"
   "willemstad"
-  "winter-spices"
   "wiselight"
   "wombat"
   "wy-console"
   "wyrd"
   "yue"
   "zario"
-  "zen"
   "zenburn"
 )
 
 mkdir temp
 cd temp
 
-#for i in "${small[@]}"; do
+# for i in "${small[@]}"; do
 for i in "${themes[@]}"; do
   echo "Start ${i}"
   git clone git@github.com:quartz-themes/${i}.git
@@ -375,26 +324,7 @@ for i in "${themes[@]}"; do
   git config --local pull.rebase true
   git config remote.template.url >&- || git remote add template git@github.com:quartz-themes/quartz-themes-preview-template.git
   git pull -X theirs template v4 --allow-unrelated-histories --no-edit
-  # rm .github/workflows/deploy-preview.yml
-  # rm .github/workflows/update.yml
-  git commit -a -m "Updated to latest template."
-
-  # replace pageTitle: "Quartz 4", with pageTitle: "${i}", in `quartz.config.ts`
-  # sed -i -e 's|pageTitle: "Quartz 4"|pageTitle: "'${i}'"|' quartz.config.ts
-
-  # replace baseUrl: "quartz.jzhao.xyz", with baseUrl: "quartz-themes.github.io/${i}", in `quartz.config.ts`
-  # sed -i -e 's|baseUrl: "quartz.jzhao.xyz"|baseUrl: "quartz-themes.github.io/'${i}'"|' quartz.config.ts
-
-  # replace ---.*?Quartz is a fast, with ---\n\nQuartz is a fase, in `docs/index.md` using perl
-  # perl -0777 -i -pe 's/\n---.*?Quartz is a fast/\n---\n\nQuartz is a fast/' docs/index.md
-
-  # replace Quartz is a fast with [${i}](https://github.com/quartz-themes/${i})\n\nQuartz is a fast, in `docs/index.md`
-  # sed -i -e 's|Quartz is a fast|[Quartz Themes on GitHub](https://github.com/saberzero1/quartz-themes/tree/master/themes/'${i}').\n\nQuartz is a fast|' docs/index.md
-
-  # git commit -a -m "Updated theme to latest template."
-
-  git push || git push --force
-  # git push
+  git push
   cd ..
   rm -rf ${i}
   echo "Finished ${i}"
