@@ -1,0 +1,35 @@
+name: Update Quartz
+ 
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "35 */1 * * *"
+  push:
+    branches:
+      - v4
+ 
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+ 
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+ 
+jobs:
+  update:
+    if: ${{ github.repository == 'quartz-themes/quartz-themes-preview-template' }}
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetch all history for git info
+      - name: Update Quartz
+        run: |
+          git config pull.rebase >&- || git config pull.rebase false
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git config remote.upstream.url >&- || git remote add upstream https://github.com/jackyzha0/quartz.git
+          git pull upstream v4 --allow-unrelated-histories --no-edit
+          git push
