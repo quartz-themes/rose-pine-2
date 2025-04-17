@@ -349,7 +349,7 @@ for i in "${themes[@]}"; do
   git config --local pull.rebase false
   git config remote.template.url >&- || git remote add template git@github.com:quartz-themes/quartz-themes-preview-template.git
   git pull -X theirs template v4 --allow-unrelated-histories --no-edit
-  rm .github/workflows/deploy.yml
+  # rm .github/workflows/deploy.yml
   git commit -a -m "Removed old deploy step"
   git push
   cd ..
