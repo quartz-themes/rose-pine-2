@@ -15,7 +15,7 @@ permissions:
  
 concurrency:
   group: "pages"
-  cancel-in-progress: false
+  cancel-in-progress: true
  
 jobs:
   build:
@@ -37,11 +37,23 @@ jobs:
           git pull -X theirs template v4 --allow-unrelated-histories --no-edit
           git push
       - name: Install Dependencies
-        run: npm ci
+        uses: nick-fields/retry@v3
+        with:
+          command: npm ci
+          timeout_minutes: 10
+          max_attempts: 3
       - name: Fetch Quartz Theme
-        run: curl -s -S https://raw.githubusercontent.com/saberzero1/quartz-themes/master/action.sh | bash -s -- ${{ github.event.repository.name }}
+        uses: nick-fields/retry@v3
+        with:
+          command: curl -s -S https://raw.githubusercontent.com/saberzero1/quartz-themes/master/action.sh | bash -s -- ${{ github.event.repository.name }}
+          timeout_minutes: 10
+          max_attempts: 3
       - name: Build Quartz Docs
-        run: npx quartz build -d docs
+        uses: nick-fields/retry@v3
+        with:
+          command: npx quartz build -d docs
+          timeout_minutes: 10
+          max_attempts: 3
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
