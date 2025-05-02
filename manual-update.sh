@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Just in case
 
 declare -a small=("testing-environment")
