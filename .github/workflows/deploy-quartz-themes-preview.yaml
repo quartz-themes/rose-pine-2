@@ -31,11 +31,12 @@ jobs:
           node-version: 22
       - name: Update Quartz
         run: |
-          git config pull.rebase >&- || git config pull.rebase true
+          git config pull.rebase >&- || git config pull.rebase false 
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
           git config remote.template.url >&- || git remote add template https://github.com/quartz-themes/quartz-themes-preview-template.git
-          git pull -X theirs template v4 --allow-unrelated-histories --no-edit
+          git pull template v4 -X theirs --no-edit
+          git pull origin v4 -X theirs --no-edit
           git push || git push --force
       - name: Install Dependencies
         uses: nick-fields/retry@v3
