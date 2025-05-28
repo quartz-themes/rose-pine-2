@@ -352,6 +352,10 @@ for i in "${themes[@]}"; do
   git pull origin v4 -X theirs --no-edit
   # rm .github/workflows/deploy-preview.yml
   # rm .github/workflows/update.yml
+
+  # rm -rf quartz/i18n/*
+  # cp -r ../../templater/quartz/i18n/* quartz/i18n/
+
   git commit -a -m "Updated to latest template."
 
   # replace pageTitle: "Quartz 4", with pageTitle: "${i}", in `quartz.config.ts`
