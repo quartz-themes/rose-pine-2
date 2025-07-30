@@ -265,6 +265,6 @@ li:has(> .folder-outer:not(.open)) > .folder-container > svg {
 
 .mobile-no-scroll {
   @media all and ($mobile) {
-    overscroll-behavior: none;
+    overflow: hidden;
   }
 }
