@@ -12,9 +12,9 @@ const OverflowList = ({
   )
 }
 
-let numLists = 0
+let numExplorers = 0
 export default () => {
-  const id = `list-${numLists++}`
+  const id = `list-${numExplorers++}`
 
   return {
     OverflowList: (props: JSX.HTMLAttributes<HTMLUListElement>) => (

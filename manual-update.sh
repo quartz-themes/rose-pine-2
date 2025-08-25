@@ -340,6 +340,7 @@ declare -a themes=(
   "zenburn"
 )
 
+cd ..
 mkdir temp
 cd temp
 
@@ -383,3 +384,4 @@ done
 
 cd ..
 rm -rf temp
+cd templater
