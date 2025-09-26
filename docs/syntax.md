@@ -123,6 +123,10 @@ Text inside `backticks` on a line will be formatted like code.
 
 If you want to put backticks in an inline code block, surround it with double backticks like so: inline ``code with a backtick ` inside``.
 
+```md
+``code with a backtick ` inside``
+```
+
 ### Code blocks
 
 To format a block of code, surround the code with triple backticks.
@@ -179,8 +183,8 @@ If you want to link to an external URL, you can create an inline link by surroun
 
 [Obsidian Help](https://help.obsidian.md/)
 
->[!tip]
- If you want to link to a file inside your vault, consider using an [internal link](https://help.obsidian.md/Linking+notes+and+files/Internal+links) instead.
+> [!tip]
+> If you want to link to a file inside your vault, consider using an [internal link](https://help.obsidian.md/Linking+notes+and+files/Internal+links) instead.
 
 You can also create external links to files in other vaults, by linking to an [Obsidian URI](https://help.obsidian.md/Concepts/Obsidian+URI).
 
@@ -344,20 +348,20 @@ You can also use inline footnotes. ^[This is an inline footnote.]
 ```
 
 > [!note]
- Inline footnotes only work in Reading View, not in Live Preview.
+> Inline footnotes only work in Reading View, not in Live Preview.
 
 ## Comments
 
-You can add comments by wrapping text with `%%`. Comments are only visible in Editing view.
+You can add comments by wrapping text with `\%\%`. Comments are only visible in Editing view.
 
 ```md
-This is an %%inline%% comment.
+This is an \%\%inline\%\% comment.
 
-%%
+\%\%
 This is a block comment.
 
 Block comments can span multiple lines.
-%%
+\%\%
 ```
 
 ___
@@ -490,22 +494,19 @@ Biology --> Chemistry
 class Biology,Chemistry internal-link;
 ```
 
->[!note]
-> 
- Internal links from diagrams don't show up in the [Graph view](https://help.obsidian.md/Plugins/Graph+view).
->
- If you have many nodes in your diagrams, you can use the following snippet.
+> [!note]
+> Internal links from diagrams don't show up in the [Graph view](https://help.obsidian.md/Plugins/Graph+view).
+> If you have many nodes in your diagrams, you can use the following snippet.
 >
 > ````md
 > ```mermaid
 > graph TD
 > 
 > A[Biology]
->B[Chemistry]
->
- A --> B
->
- class A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z internal-link;
+> B[Chemistry]
+> 
+> A --> B
+> class A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z internal-link;
 > ```
 > ````
 
