@@ -412,12 +412,12 @@ If you want to use [aliases](https://help.obsidian.md/Linking+notes+and+files/Al
 ```md
 | First column | Second column |
 | -- | -- |
-|[[Markdown Formatting Guide#Basic Formatting Syntax\|Markdown Basics]]|![Engelbart\|75](https://history-computer.com/ModernComputer/Basis/images/Engelbart.jpg)|
+|[[index\|Landing page]]|![Engelbart\|75](https://history-computer.com/ModernComputer/Basis/images/Engelbart.jpg)|
 ```
 
 |First column|Second column|
 |---|---|
-|[[Markdown Formatting Guide#Basic Formatting Syntax\|Markdown Basics]]|![Engelbart\|75](https://history-computer.com/ModernComputer/Basis/images/Engelbart.jpg)|
+|[[index\|Landing page]]|![Engelbart\|75](https://history-computer.com/ModernComputer/Basis/images/Engelbart.jpg)|
 
 You can align text to the left, right, or center of a column by adding colons (`:`) to the header row.
 
