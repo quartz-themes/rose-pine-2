@@ -358,6 +358,7 @@ declare -a themes=(
   "velvet-moon"
   "venom"
   "vercel-geist"
+  "vermilion"
   "vesnea-vibe"
   "vesper"
   "vibrant"
