@@ -5,17 +5,15 @@ declare -a small=("blood-rush")
 
 declare -a themes=(
   "80s-neon"
-  "abate"
   "abecedarium"
   "absolutegruv"
   "abyssal"
   "adrenaline"
   "adwaita"
-  "agate"
   "aged-whisky"
-  "al-dente"
   "allium"
   "amoled-serenity"
+  "antique-flowers"
   "anuppuccin"
   "apatheia"
   "apex"
@@ -41,6 +39,7 @@ declare -a themes=(
   "blood-rush"
   "blossom"
   "blue-topaz"
+  "blur"
   "bolt"
   "border"
   "borealis"
@@ -51,8 +50,8 @@ declare -a themes=(
   "carbon"
   "cardstock"
   "catppuccin"
-  "catppuccin.frappe"
-  "catppuccin.macchiato"
+  catppuccin.frappe
+  catppuccin.macchiato
   "celestial-night"
   "charcoal"
   "chiaroscuroflow"
@@ -82,12 +81,13 @@ declare -a themes=(
   "dark-moss"
   "darkember"
   "darkyan"
-  "dashboard"
   "dawn"
-  "dayspring"
+  "dedication"
+  "deep-submerge"
   "deeper-work"
   "default"
   "dekurai"
+  "desserts"
   "discordian"
   "dracula-for-obsidian"
   "dracula-gemini"
@@ -118,6 +118,8 @@ declare -a themes=(
   "firefly"
   "flatcap"
   "flexcyon"
+  flexcyon.tui
+  "flexoki"
   "flexoki-warm"
   "flexoki"
   "focus"
@@ -137,16 +139,30 @@ declare -a themes=(
   "hackthebox"
   "halcyon"
   "heboric"
+  "hidden-grotto"
   "hipstersmoothie"
   "hulk"
   "ia-writer"
   "ib-writer"
   "iceberg"
   "improved-potato"
-  "ink"
   "ion"
   "iridium"
   "its-theme"
+  its-theme.blue
+  its-theme.drowned
+  its-theme.gray
+  its-theme.its-dark
+  its-theme.minimalist
+  its-theme.nord
+  its-theme.notion
+  its-theme.rainbow
+  its-theme.school-days
+  its-theme.tangerine-dunes
+  its-theme.ttrpg-dnd
+  its-theme.ttrpg-pathfinder
+  its-theme.ttrpg-pathfinder-remastered
+  its-theme.ttrpg-wotc
   "jotter"
   "kakano"
   "kanagawa-paper"
@@ -155,7 +171,6 @@ declare -a themes=(
   "kurokula"
   "lagom"
   "latex"
-  "lavender-mist"
   "lemons-theme"
   "lesswrong"
   "light-bright"
@@ -168,6 +183,9 @@ declare -a themes=(
   "magicuser"
   "mammoth"
   "maple"
+  maple.default
+  maple.minimal
+  "marathon"
   "material-3"
   "material-flat"
   "material-gruvbox"
@@ -182,46 +200,45 @@ declare -a themes=(
   "minimal-edge"
   "minimal-red"
   "minimal-resources"
+  "minimalist-studio"
   "minimalists-paradise"
-  "mint-breeze"
   "mistymauve"
   "modern-genz-vibedose"
   "mono-black-monochrome-charcoal"
   "monochroyou"
   "monokai"
+  "monokai-ristretto"
   "moonlight"
   "mulled-wine"
+  "museifu-basic"
   "mushin"
   "muted-blue"
   "nebula"
   "neo"
   "neon-synthwave"
   "neovim"
-  "neuborder"
+  "neumorphism"
   "neutral-academia"
   "nier"
   "nightfox"
   "nightingale"
+  "nightly-wolf"
   "nobb"
   "noctilux"
   "noctis"
   "nord"
-  "nordic"
-  "northern-sky"
   "nostromo"
-  "nota-limonada-light"
   "notation"
   "notation-2"
   "notation"
   "notswift"
   "novadust"
-  "obsidian-boom"
   "obsidian-gruvbox"
   "obsidian-nord"
-  "obsidian_ia"
-  "obsidian_vibrant"
   "obsidianite"
   "obsidianotion"
+  "obsidian_ia"
+  "obsidian_vibrant"
   "obuntu"
   "oistnb"
   "old-world"
@@ -236,11 +253,11 @@ declare -a themes=(
   "origami"
   "origin"
   "osaka-jade"
+  "oscura"
   "overcast"
   "pale"
   "panic-mode"
   "penumbra"
-  "perso"
   "phoenix"
   "pine-forest-berry"
   "pink-topaz"
@@ -315,7 +332,6 @@ declare -a themes=(
   "soloing"
   "soothe"
   "space"
-  "sparkling-day"
   "sparkling-night"
   "sparkling-wisdom"
   "spectrum-blue"
@@ -344,6 +360,7 @@ declare -a themes=(
   "trace-labs"
   "transient"
   "transparent"
+  "true-black"
   "typewriter"
   "typomagical"
   "typora-vue"
@@ -351,6 +368,7 @@ declare -a themes=(
   "ukiyo"
   "ultra-lobster"
   "underwater"
+  "universitario"
   "ursa"
   "vanilla-amoled-color"
   "vanilla-amoled"
@@ -368,21 +386,40 @@ declare -a themes=(
   "violet-evening"
   "virgo"
   "vortex"
-  "w95"
   "wasp"
   "wikipedia"
   "wilcoxone"
   "willemstad"
-  "winter-spices"
-  "wiselight"
   "wombat"
   "wy-console"
   "wyrd"
+  "xscriptor"
   "yue"
   "zario"
   "zen"
   "zenburn"
-
+  "abate"
+  "agate"
+  "al-dente"
+  "comfort"
+  "dashboard"
+  "dayspring"
+  "gdct"
+  "handwriting-kalam"
+  "ink"
+  "lavender-mist"
+  "mint-breeze"
+  "neuborder"
+  "nordic"
+  "northern-sky"
+  "nota-limonada-light"
+  "obsidian-boom"
+  "parfait"
+  "perso"
+  "sparkling-day"
+  "w95"
+  "winter-spices"
+  "wiselight"
 )
 
 cd ..
@@ -392,11 +429,13 @@ cd temp
 #for i in "${small[@]}"; do
 for i in "${themes[@]}"; do
   echo "Start ${i}"
-  git clone git@github.com:quartz-themes/${i}.git
+  # git clone git@github.com:quartz-themes/${i}.git
+  git clone https://github.com/quartz-themes/${i}.git
   cd ${i}
   # git config pull.rebase >&- || git config pull.rebase false
   git config --local pull.rebase false
-  git config remote.template.url >&- || git remote add template git@github.com:quartz-themes/quartz-themes-preview-template.git
+  # git config remote.template.url >&- || git remote add template git@github.com:quartz-themes/quartz-themes-preview-template.git
+  git config remote.template.url >&- || git remote add template https://github.com/quartz-themes/quartz-themes-preview-template.git
   git pull template v4 -X theirs --no-edit || git pull template v4 -X theirs --allow-unrelated-histories --no-edit
   git pull origin v4 -X theirs --no-edit || git pull origin v4 -X theirs --allow-unrelated-histories --no-edit
   # rm .github/workflows/deploy-preview.yml
