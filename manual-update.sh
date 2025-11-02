@@ -50,8 +50,8 @@ declare -a themes=(
   "carbon"
   "cardstock"
   "catppuccin"
-  catppuccin.frappe
-  catppuccin.macchiato
+  "catppuccin.frappe"
+  "catppuccin.macchiato"
   "celestial-night"
   "charcoal"
   "chiaroscuroflow"
@@ -118,7 +118,7 @@ declare -a themes=(
   "firefly"
   "flatcap"
   "flexcyon"
-  flexcyon.tui
+  "flexcyon.tui"
   "flexoki"
   "flexoki-warm"
   "flexoki"
@@ -149,20 +149,20 @@ declare -a themes=(
   "ion"
   "iridium"
   "its-theme"
-  its-theme.blue
-  its-theme.drowned
-  its-theme.gray
-  its-theme.its-dark
-  its-theme.minimalist
-  its-theme.nord
-  its-theme.notion
-  its-theme.rainbow
-  its-theme.school-days
-  its-theme.tangerine-dunes
-  its-theme.ttrpg-dnd
-  its-theme.ttrpg-pathfinder
-  its-theme.ttrpg-pathfinder-remastered
-  its-theme.ttrpg-wotc
+  "its-theme.blue"
+  "its-theme.drowned"
+  "its-theme.gray"
+  "its-theme.its-dark"
+  "its-theme.minimalist"
+  "its-theme.nord"
+  "its-theme.notion"
+  "its-theme.rainbow"
+  "its-theme.school-days"
+  "its-theme.tangerine-dunes"
+  "its-theme.ttrpg-dnd"
+  "its-theme.ttrpg-pathfinder"
+  "its-theme.ttrpg-pathfinder-remastered"
+  "its-theme.ttrpg-wotc"
   "jotter"
   "kakano"
   "kanagawa-paper"
@@ -183,8 +183,8 @@ declare -a themes=(
   "magicuser"
   "mammoth"
   "maple"
-  maple.default
-  maple.minimal
+  "maple.default"
+  "maple.minimal"
   "marathon"
   "material-3"
   "material-flat"
