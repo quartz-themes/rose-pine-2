@@ -104,8 +104,8 @@ You can quote text by adding a `>` symbols before the text.
 
 - Doug Engelbart, 1961
 
->[!info]
- You can turn your quote into a [callout](https://help.obsidian.md/Editing+and+formatting/Callouts) by adding `[!info]` as the first line in a quote.
+> [!info]
+> You can turn your quote into a [callout](https://help.obsidian.md/Editing+and+formatting/Callouts) by adding `[!info]` as the first line in a quote.
 
 ## Code
 
@@ -232,8 +232,8 @@ If you only specify the width, the image scales according to its original aspect
 
 ![Engelbart|75](https://history-computer.com/ModernComputer/Basis/images/Engelbart.jpg)
 
->[!tip]
- If you want to add an image from inside your vault, you can also [embed an image in a note](https://help.obsidian.md/Linking+notes+and+files/Embedding+files#Embed%20an%20image%20in%20a%20note).
+> [!tip]
+> If you want to add an image from inside your vault, you can also [embed an image in a note](https://help.obsidian.md/Linking+notes+and+files/Embedding+files#Embed%20an%20image%20in%20a%20note).
 
 ## Lists
 
@@ -291,8 +291,8 @@ To create a task list, start each list item with a hyphen and space followed by 
 
 You can toggle a task in Reading view by selecting the checkbox.
 
->[!tip]
- You can use any character inside the brackets to mark it as complete.
+> [!tip]
+> You can use any character inside the brackets to mark it as complete.
 
 ```md
 - [x] Milk
@@ -435,8 +435,8 @@ Content | Content | Content
 
 You can add diagrams and charts to your notes, using [Mermaid](https://mermaid-js.github.io/). Mermaid supports a range of diagrams, such as [flow charts](https://mermaid.js.org/syntax/flowchart.html), [sequence diagrams](https://mermaid.js.org/syntax/sequenceDiagram.html), and [timelines](https://mermaid.js.org/syntax/timeline.html).
 
->[!tip]
-You can also try Mermaid's [Live Editor](https://mermaid-js.github.io/mermaid-live-editor) to help you build diagrams before you include them in your notes.
+> [!tip]
+> You can also try Mermaid's [Live Editor](https://mermaid-js.github.io/mermaid-live-editor) to help you build diagrams before you include them in your notes.
 
 To add a Mermaid diagram, create a `mermaid` [code block](https://help.obsidian.md/Editing+and+formatting/Basic+formatting+syntax#Code%20blocks).
 
