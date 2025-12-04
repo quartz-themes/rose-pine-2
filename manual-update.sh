@@ -1,7 +1,7 @@
 #!/bin/bash
 # Just in case
 
-declare -a small=("blood-rush")
+declare -a small=("flexcyon.tui")
 
 declare -a themes=(
   "80s-neon"
