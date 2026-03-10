@@ -56,7 +56,7 @@ jobs:
       - name: Fetch Quartz Theme
         uses: nick-fields/retry@v3
         with:
-          command: curl -s -S https://raw.githubusercontent.com/saberzero1/quartz-themes/cli/action_develop_branch.sh | bash -s -- ${{ github.event.repository.name }}
+          command: curl -s -S https://raw.githubusercontent.com/saberzero1/quartz-themes/develop/action_develop_branch.sh | bash -s -- ${{ github.event.repository.name }}
           timeout_minutes: 2
           max_attempts: 3
       - name: Build Quartz Docs
