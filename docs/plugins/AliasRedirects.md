@@ -33,5 +33,6 @@ This plugin has no configuration options.
 ## API
 
 - Category: Emitter
-- Function name: `Plugin.AliasRedirects()`.
-- Source: [`quartz/plugins/emitters/aliases.ts`](https://github.com/jackyzha0/quartz/blob/v4/quartz/plugins/emitters/aliases.ts).
+- Function name: `ExternalPlugin.AliasRedirects()`.
+- Source: [`quartz-community/alias-redirects`](https://github.com/quartz-community/alias-redirects)
+- Install: `npx quartz plugin add github:quartz-community/alias-redirects`

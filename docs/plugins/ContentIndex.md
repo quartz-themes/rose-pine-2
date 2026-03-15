@@ -23,5 +23,6 @@ This plugin accepts the following configuration options:
 ## API
 
 - Category: Emitter
-- Function name: `Plugin.ContentIndex()`.
-- Source: [`quartz/plugins/emitters/contentIndex.ts`](https://github.com/jackyzha0/quartz/blob/v4/quartz/plugins/emitters/contentIndex.ts).
+- Function name: `ExternalPlugin.ContentIndex()`.
+- Source: [`quartz-community/content-index`](https://github.com/quartz-community/content-index)
+- Install: `npx quartz plugin add github:quartz-community/content-index`

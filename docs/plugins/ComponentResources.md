@@ -14,5 +14,5 @@ This plugin has no configuration options.
 ## API
 
 - Category: Emitter
-- Function name: `Plugin.ComponentResources()`.
-- Source: [`quartz/plugins/emitters/componentResources.ts`](https://github.com/jackyzha0/quartz/blob/v4/quartz/plugins/emitters/componentResources.ts).
+- Function name: `Plugin.ComponentResources()` (internal plugin).
+- Source: [`quartz/plugins/emitters/componentResources.ts`](https://github.com/jackyzha0/quartz/blob/v5/quartz/plugins/emitters/componentResources.ts).

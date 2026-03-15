@@ -16,5 +16,5 @@ This plugin has no configuration options.
 ## API
 
 - Category: Emitter
-- Function name: `Plugin.Assets()`.
-- Source: [`quartz/plugins/emitters/assets.ts`](https://github.com/jackyzha0/quartz/blob/v4/quartz/plugins/emitters/assets.ts).
+- Function name: `Plugin.Assets()` (internal plugin).
+- Source: [`quartz/plugins/emitters/assets.ts`](https://github.com/jackyzha0/quartz/blob/v5/quartz/plugins/emitters/assets.ts).

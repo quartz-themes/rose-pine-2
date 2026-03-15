@@ -14,5 +14,6 @@ This plugin has no configuration options.
 ## API
 
 - Category: Filter
-- Function name: `Plugin.ExplicitPublish()`.
-- Source: [`quartz/plugins/filters/explicit.ts`](https://github.com/jackyzha0/quartz/blob/v4/quartz/plugins/filters/explicit.ts).
+- Function name: `ExternalPlugin.ExplicitPublish()`.
+- Source: [`quartz-community/explicit-publish`](https://github.com/quartz-community/explicit-publish)
+- Install: `npx quartz plugin add github:quartz-community/explicit-publish`

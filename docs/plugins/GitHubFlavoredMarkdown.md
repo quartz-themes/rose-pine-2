@@ -19,5 +19,6 @@ This plugin accepts the following configuration options:
 ## API
 
 - Category: Transformer
-- Function name: `Plugin.GitHubFlavoredMarkdown()`.
-- Source: [`quartz/plugins/transformers/gfm.ts`](https://github.com/jackyzha0/quartz/blob/v4/quartz/plugins/transformers/gfm.ts).
+- Function name: `ExternalPlugin.GitHubFlavoredMarkdown()`.
+- Source: [`quartz-community/github-flavored-markdown`](https://github.com/quartz-community/github-flavored-markdown)
+- Install: `npx quartz plugin add github:quartz-community/github-flavored-markdown`

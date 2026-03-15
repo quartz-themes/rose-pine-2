@@ -19,5 +19,6 @@ In addition, you can further override the colours in the `quartz/styles/syntax.s
 ## API
 
 - Category: Transformer
-- Function name: `Plugin.SyntaxHighlighting()`.
-- Source: [`quartz/plugins/transformers/syntax.ts`](https://github.com/jackyzha0/quartz/blob/v4/quartz/plugins/transformers/syntax.ts).
+- Function name: `ExternalPlugin.SyntaxHighlighting()`.
+- Source: [`quartz-community/syntax-highlighting`](https://github.com/quartz-community/syntax-highlighting)
+- Install: `npx quartz plugin add github:quartz-community/syntax-highlighting`
