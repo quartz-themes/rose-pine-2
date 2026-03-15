@@ -7,6 +7,7 @@ on:
   push:
     branches:
       - v4
+      - v5
 
 permissions:
   contents: write
@@ -23,22 +24,47 @@ jobs:
     runs-on: ubuntu-22.04
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0 # Fetch all history for git info
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
-          node-version: 22
-      - name: Update Quartz
-        run: |
-          git config pull.rebase >&- || git config pull.rebase false 
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "github-actions[bot]"
-          git config remote.template.url >&- || git remote add template https://github.com/quartz-themes/quartz-themes-preview-template.git
-          git pull template v4 -X theirs --no-edit
-          git pull origin v4 -X theirs --no-edit
-          git push || git push --force
+          node-version: 24
+      # - name: Cache dependencies
+      #   uses: actions/cache@v5
+      #   with:
+      #     path: ~/.npm
+      #     key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-node-
+      #
+      - name: Cache Quartz plugins
+        uses: actions/cache@v5
+        with:
+          path: .quartz/plugins
+          key: ${{ runner.os }}-plugins-${{ hashFiles('quartz.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-plugins-
+
       - name: Install Dependencies
+        uses: nick-fields/retry@v3
+        with:
+          command: |
+            npm ci
+            npx quartz plugin restore
+            npx quartz plugin update
+          timeout_minutes: 3
+          max_attempts: 3
+          on_retry_command: |
+            npm install
+            cp quartz.lock.json quartz.lock.json.bak
+            npx quartz upgrade &>/dev/null || true
+            rm quartz.lock.json
+            mv quartz.lock.json.bak quartz.lock.json
+            npx quartz plugin restore
+            npx quartz plugin update
+
+      - name: Push updates
         uses: nick-fields/retry@v3
         with:
           command: npm ci
@@ -48,17 +74,14 @@ jobs:
             git config pull.rebase >&- || git config pull.rebase true
             git config --global user.email "github-actions[bot]@users.noreply.github.com"
             git config --global user.name "github-actions[bot]"
-            npm install
             git add package.json
             git add package-lock.json
-            git commit -m "synced package.json and package-lock.json"
+            git add quartz.lock.json
+            git add quartz.config.default.yaml
+            git add quartz.config.yaml
+            git commit -m "synced dependencies"
             git push
-      - name: Fetch Quartz Theme
-        uses: nick-fields/retry@v3
-        with:
-          command: curl -s -S https://raw.githubusercontent.com/saberzero1/quartz-themes/develop/action_develop_branch.sh | bash -s -- ${{ github.event.repository.name }}
-          timeout_minutes: 2
-          max_attempts: 3
+
       - name: Build Quartz Docs
         uses: nick-fields/retry@v3
         with:
