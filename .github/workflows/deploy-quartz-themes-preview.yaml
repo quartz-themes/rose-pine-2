@@ -6,7 +6,6 @@ on:
     - cron: "40 */4 * * *"
   push:
     branches:
-      - v4
       - v5
 
 permissions:

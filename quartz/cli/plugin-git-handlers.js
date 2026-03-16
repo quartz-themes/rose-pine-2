@@ -86,22 +86,6 @@ async function runParallel(items, concurrency, fn) {
   return results
 }
 
-/**
- * Check whether a plugin's .gitignore excludes dist/.
- * When dist/ is gitignored, the plugin cannot ship pre-built output in version
- * control (e.g. because it uses tree-shaking) and must always be built locally.
- */
-function isDistGitignored(pluginDir) {
-  const gitignorePath = path.join(pluginDir, ".gitignore")
-  if (!fs.existsSync(gitignorePath)) return false
-
-  const lines = fs.readFileSync(gitignorePath, "utf-8").split("\n")
-  return lines.some((line) => {
-    const trimmed = line.trim()
-    return trimmed === "dist" || trimmed === "dist/" || trimmed === "/dist" || trimmed === "/dist/"
-  })
-}
-
 function needsBuild(pluginDir) {
   if (isDistGitignored(pluginDir)) return true
   const distDir = path.join(pluginDir, "dist")
@@ -1114,21 +1098,6 @@ export async function handlePluginResolve({ dryRun = false } = {}) {
     })
     for (const ok of results) {
       if (!ok) failed++
-    }
-    await regeneratePluginIndex()
-  }
-
-  const configNames = new Set(pluginsJson.plugins.map((entry) => extractPluginName(entry.source)))
-  const orphans = Object.keys(lockfile.plugins).filter((name) => !configNames.has(name))
-  if (orphans.length > 0) {
-    console.log()
-    for (const name of orphans) {
-      const pluginDir = path.join(PLUGINS_DIR, name)
-      if (fs.existsSync(pluginDir)) {
-        fs.rmSync(pluginDir, { recursive: true })
-      }
-      delete lockfile.plugins[name]
-      console.log(styleText("yellow", `✗ Removed ${name} (not in config)`))
     }
     await regeneratePluginIndex()
   }
