@@ -45,37 +45,16 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-plugins-
 
-      - name: Install Dependencies
+      - name: Install updates
         uses: nick-fields/retry@v3
         with:
           command: |
-            npm ci
-            npx quartz plugin restore
-            npx quartz plugin update
-          timeout_minutes: 3
-          max_attempts: 3
-          on_retry_command: |
-            npm install
-            cp quartz.lock.json quartz.lock.json.bak
-            npx quartz upgrade &>/dev/null || true
-            rm quartz.lock.json
-            mv quartz.lock.json.bak quartz.lock.json
-            npx quartz plugin restore
-            npx quartz plugin update
-
-      - name: Push updates
-        uses: nick-fields/retry@v3
-        with:
-          command: |
-            git config pull.rebase >&- || git config pull.rebase true
             git config --global user.email "github-actions[bot]@users.noreply.github.com"
             git config --global user.name "github-actions[bot]"
-            git add package.json
-            git add package-lock.json
-            git add quartz.lock.json
-            git add quartz.config.default.yaml
-            git add quartz.config.yaml
-            git commit -m "synced dependencies"
+            npm install
+            npx quartz upgrade
+            npx quartz plugin restore
+            npx quartz plugin update
             git push
           timeout_minutes: 3
           max_attempts: 3

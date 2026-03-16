@@ -314,7 +314,7 @@ export async function handlePluginInstall() {
       try {
         console.log(styleText("cyan", `  → ${name}: cloning...`))
         const branchArg = entry.ref ? ` --branch ${entry.ref}` : ""
-        execSync(`git clone --depth 1${branchArg} ${entry.resolved} ${pluginDir}`, {
+        execSync(`git clone --depth 1${branchArg} "${entry.resolved}" "${pluginDir}"`, {
           stdio: "ignore",
         })
         if (entry.commit !== "unknown") {
@@ -405,9 +405,11 @@ export async function handlePluginAdd(sources) {
         console.log(styleText("cyan", `→ Adding ${name} from ${url}...`))
 
         if (ref) {
-          execSync(`git clone --depth 1 --branch ${ref} ${url} ${pluginDir}`, { stdio: "ignore" })
+          execSync(`git clone --depth 1 --branch ${ref} "${url}" "${pluginDir}"`, {
+            stdio: "ignore",
+          })
         } else {
-          execSync(`git clone --depth 1 ${url} ${pluginDir}`, { stdio: "ignore" })
+          execSync(`git clone --depth 1 "${url}" "${pluginDir}"`, { stdio: "ignore" })
         }
 
         const commit = getGitCommit(pluginDir)
@@ -643,7 +645,7 @@ export async function handlePluginCheck() {
 
     try {
       const lsRemoteRef = entry.ref ? `refs/heads/${entry.ref}` : "HEAD"
-      const latestCommit = execSync(`git ls-remote ${entry.resolved} ${lsRemoteRef}`, {
+      const latestCommit = execSync(`git ls-remote "${entry.resolved}" ${lsRemoteRef}`, {
         encoding: "utf-8",
       })
         .split("\t")[0]
@@ -864,7 +866,7 @@ export async function handlePluginRestore() {
         styleText("cyan", `→ ${name}: cloning ${entry.resolved}@${entry.commit.slice(0, 7)}...`),
       )
       const branchArg = entry.ref ? ` --branch ${entry.ref}` : ""
-      execSync(`git clone --depth 1${branchArg} ${entry.resolved} ${pluginDir}`, {
+      execSync(`git clone --depth 1${branchArg} "${entry.resolved}" "${pluginDir}"`, {
         stdio: "ignore",
       })
       execSync(`git checkout ${entry.commit}`, { cwd: pluginDir, stdio: "ignore" })
@@ -1064,9 +1066,11 @@ export async function handlePluginResolve({ dryRun = false } = {}) {
         console.log(styleText("cyan", `→ Cloning ${name} from ${url}...`))
 
         if (ref) {
-          execSync(`git clone --depth 1 --branch ${ref} ${url} ${pluginDir}`, { stdio: "ignore" })
+          execSync(`git clone --depth 1 --branch ${ref} "${url}" "${pluginDir}"`, {
+            stdio: "ignore",
+          })
         } else {
-          execSync(`git clone --depth 1 ${url} ${pluginDir}`, { stdio: "ignore" })
+          execSync(`git clone --depth 1 "${url}" "${pluginDir}"`, { stdio: "ignore" })
         }
 
         const commit = getGitCommit(pluginDir)
