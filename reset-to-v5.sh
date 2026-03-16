@@ -647,8 +647,8 @@ reset_theme() {
       fi
 
       if ! gh api -X PUT "repos/${ORG}/${theme}/environments/${ENVIRONMENT_NAME}" \
-        -f deployment_branch_policy[protected_branches]=false \
-        -f deployment_branch_policy[custom_branch_policies]=true &>/dev/null; then
+        -F deployment_branch_policy[protected_branches]=false \
+        -F deployment_branch_policy[custom_branch_policies]=true &>/dev/null; then
         echo "SKIP ${theme}: failed to update ${ENVIRONMENT_NAME} environment"
         echo "--- END ${theme} (SKIP) ---"
         return 1
@@ -657,8 +657,8 @@ reset_theme() {
       if ! gh api -X POST "repos/${ORG}/${theme}/environments/${ENVIRONMENT_NAME}/deployment-branch-policies" \
         -f type=branch -f name="${TARGET_BRANCH}" &>/dev/null; then
         gh api -X PUT "repos/${ORG}/${theme}/environments/${ENVIRONMENT_NAME}" \
-          -f deployment_branch_policy[protected_branches]=false \
-          -f deployment_branch_policy[custom_branch_policies]=false &>/dev/null || true
+          -F deployment_branch_policy[protected_branches]=false \
+          -F deployment_branch_policy[custom_branch_policies]=false &>/dev/null || true
         echo "SKIP ${theme}: failed to add ${TARGET_BRANCH} branch policy"
         echo "--- END ${theme} (SKIP) ---"
         return 1
