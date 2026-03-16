@@ -110,6 +110,9 @@ npx quartz plugin check
 
 Remove installed plugins that are no longer referenced in your `quartz.config.yaml`. This is useful for cleaning up after removing plugin entries from your configuration.
 
+> [!note]
+> The `resolve` command also removes orphaned plugins as part of its synchronization. Use `prune` when you only want to clean up without installing anything new.
+
 ```shell
 npx quartz plugin prune
 ```
@@ -122,7 +125,7 @@ npx quartz plugin prune --dry-run
 
 ### resolve
 
-Install plugins that are listed in your `quartz.config.yaml` but missing from the lockfile. This is the inverse of `prune` — it ensures your installed plugins match your configuration.
+Synchronize your installed plugins with your `quartz.config.yaml`. This installs plugins that are in your config but missing from the lockfile, and removes plugins that are in the lockfile but no longer referenced in your config.
 
 ```shell
 npx quartz plugin resolve
@@ -170,7 +173,7 @@ npx quartz plugin prune            # remove orphaned plugins
 
 ### Setting Up from Config
 
-When setting up on a new machine or in CI, resolve any plugins referenced in your config that aren't yet installed:
+When setting up on a new machine or in CI, resolve ensures your installed plugins match your config — installing missing plugins and removing any that are no longer referenced:
 
 ```shell
 npx quartz plugin resolve

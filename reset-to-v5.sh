@@ -1,0 +1,666 @@
+#!/usr/bin/env bash
+#
+# reset-to-v5.sh — Nuclear reset all quartz-themes preview repos to the v5 template
+#
+# Strategy:
+#   1. Clone the template repo once as a bare reference
+#   2. For each theme repo: fetch template tree, replace all files, apply per-repo overrides, force-push
+#
+# This completely replaces the repo contents with the template — no merge conflicts possible.
+# GitHub Pages settings are stored in repo settings (not in the repo), so they survive force-push.
+#
+# Usage:
+#   ./reset-to-v5.sh              # Reset all themes (with GNU parallel if available)
+#   ./reset-to-v5.sh --dry-run    # Show what would happen without pushing
+#   ./reset-to-v5.sh --jobs 8     # Override parallelism (default: 4)
+#   ./reset-to-v5.sh theme1 ...   # Reset specific themes only
+#
+set -euo pipefail
+
+# --- Configuration ---
+TEMPLATE_REPO="https://github.com/quartz-themes/quartz-themes-preview-template.git"
+TEMPLATE_BRANCH="v5"
+TARGET_BRANCH="v5"
+DEFAULT_JOBS=4
+DRY_RUN=false
+JOBS="$DEFAULT_JOBS"
+
+# --- Parse arguments ---
+SPECIFIC_THEMES=()
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --dry-run)  DRY_RUN=true; shift ;;
+    --jobs)     JOBS="$2"; shift 2 ;;
+    -j)         JOBS="$2"; shift 2 ;;
+    -j*)        JOBS="${1#-j}"; shift ;;
+    --help|-h)
+      echo "Usage: $0 [--dry-run] [--jobs N] [theme1 theme2 ...]"
+      echo ""
+      echo "Options:"
+      echo "  --dry-run    Show what would happen without pushing"
+      echo "  --jobs N     Number of parallel workers (default: $DEFAULT_JOBS)"
+      echo "  theme1 ...   Reset only specific themes (default: all)"
+      exit 0
+      ;;
+    *)          SPECIFIC_THEMES+=("$1"); shift ;;
+  esac
+done
+
+# --- All themes (same list as manual-update.sh) ---
+declare -a ALL_THEMES=(
+  "80s-neon"
+  "abecedarium"
+  "absolutegruv"
+  "abyssal"
+  "adrenaline"
+  "adwaita"
+  "aged-whisky"
+  "allium"
+  "amoled-serenity"
+  "antique-flowers"
+  "anuppuccin"
+  "apatheia"
+  "apex"
+  "arcane"
+  "arzaba"
+  "atom"
+  "atomus"
+  "auger"
+  "aura"
+  "aura-dark"
+  "aurora"
+  "aurora-twilight"
+  "autotape"
+  "avatar"
+  "ayu-light-mirage"
+  "ayu-mirage"
+  "azure"
+  "base16-default-dark"
+  "base2tone"
+  "baseline"
+  "behave-dark"
+  "big-bold"
+  "black"
+  "blackbird"
+  "blood-rush"
+  "blossom"
+  "blue-topaz"
+  "blur"
+  "bolt"
+  "border"
+  "borealis"
+  "bossidian"
+  "brainhack"
+  "brutalism"
+  "brutalist"
+  "buena-vista"
+  "camena"
+  "carbon"
+  "cardstock"
+  "catppuccin"
+  "catppuccin.frappe"
+  "catppuccin.macchiato"
+  "celestial-night"
+  "charcoal"
+  "chiaroscuroflow"
+  "chime"
+  "christmas"
+  "cobalt-peacock"
+  "cocoa"
+  "coffee"
+  "colored-candy"
+  "comfort-color-dark"
+  "comfort-dark"
+  "comfort-smooth"
+  "composer"
+  "consolas"
+  "cosmical"
+  "covert"
+  "creature"
+  "creme-brulee"
+  "cupertino"
+  "cyber-glow"
+  "cybertron"
+  "cybertron-shifted"
+  "dark-castle"
+  "dark-clarity"
+  "dark-graphite"
+  "dark-graphite-pie"
+  "dark-moss"
+  "darkember"
+  "darkyan"
+  "dawn"
+  "dedication"
+  "dedication-2"
+  "deep-submerge"
+  "deeper-work"
+  "default"
+  "dekurai"
+  "desserts"
+  "discordian"
+  "dracula-for-obsidian"
+  "dracula-gemini"
+  "dracula-lyt"
+  "dracula-official"
+  "dracula-plus"
+  "dracula-slim"
+  "duality"
+  "dune"
+  "dunite"
+  "dust"
+  "dynamic-color"
+  "ebullientworks"
+  "eldritch"
+  "elegance"
+  "emerald-echo"
+  "encore"
+  "enhanced-file-explorer-tree"
+  "ethereon"
+  "evangelion"
+  "everblush"
+  "everforest"
+  "everforest-enchanted"
+  "everforest-spruce"
+  "evergreen-shadow"
+  "evilred"
+  "faded"
+  "fancy-a-story"
+  "fastppuccin"
+  "feather"
+  "firefly"
+  "flatcap"
+  "flexcyon"
+  "flexcyon.tui"
+  "flexoki"
+  "flexoki-warm"
+  "focus"
+  "frost"
+  "fusion"
+  "future"
+  "garden-gnome-adwaita-gtk"
+  "gdct-dark"
+  "github-theme"
+  "githubdhc"
+  "gitsidian"
+  "glass-robo"
+  "golden-topaz"
+  "green-nightmare"
+  "gummy-revived"
+  "hackthebox"
+  "halcyon"
+  "heboric"
+  "hidden-grotto"
+  "hipstersmoothie"
+  "hojicha"
+  "hoverpopup"
+  "hulk"
+  "hydra-pressure"
+  "ia-writer"
+  "ib-writer"
+  "iceberg"
+  "improved-potato"
+  "ion"
+  "iridium"
+  "its-theme"
+  "its-theme.blue"
+  "its-theme.drowned"
+  "its-theme.gray"
+  "its-theme.its-dark"
+  "its-theme.minimalist"
+  "its-theme.nord"
+  "its-theme.notion"
+  "its-theme.rainbow"
+  "its-theme.school-days"
+  "its-theme.tangerine-dunes"
+  "its-theme.ttrpg-dnd"
+  "its-theme.ttrpg-pathfinder"
+  "its-theme.ttrpg-pathfinder-remastered"
+  "its-theme.ttrpg-wotc"
+  "jotter"
+  "kakano"
+  "kanagawa"
+  "kanagawa-paper"
+  "kiwi-mono"
+  "kurokula"
+  "lagom"
+  "latex"
+  "lemons-theme"
+  "lesswrong"
+  "light-bright"
+  "listive"
+  "lorens"
+  "lumines"
+  "lyt-mode"
+  "mado-11"
+  "mado-miniflow"
+  "magicuser"
+  "mammoth"
+  "maple"
+  "maple.default"
+  "maple.minimal"
+  "marathon"
+  "material-3"
+  "material-flat"
+  "material-gruvbox"
+  "material-ocean"
+  "matrix"
+  "meridian"
+  "micro-mike"
+  "midnight"
+  "midnight-fjord"
+  "minimal"
+  "minimal-dark-coder"
+  "minimal-dracula"
+  "minimal-edge"
+  "minimal-red"
+  "minimal-resources"
+  "minimalist-studio"
+  "minimalists-paradise"
+  "mistymauve"
+  "modern-genz-vibedose"
+  "mono-black-monochrome-charcoal"
+  "mono-high-contrast"
+  "monochroyou"
+  "monokai"
+  "monokai-ristretto"
+  "moonlight"
+  "mulled-wine"
+  "museifu-basic"
+  "mushin"
+  "muted-blue"
+  "myst"
+  "nebula"
+  "neo"
+  "neo-sploosh"
+  "neon-synthwave"
+  "neovim"
+  "neumorphism"
+  "neutral-academia"
+  "nichneumor"
+  "nier"
+  "night-owl"
+  "nightfox"
+  "nightingale"
+  "nightly-wolf"
+  "nobb"
+  "noctilux"
+  "noctis"
+  "noctis-viola"
+  "nord"
+  "nostromo"
+  "notation"
+  "notation-2"
+  "notswift"
+  "novadust"
+  "obsidian-gruvbox"
+  "obsidian-nord"
+  "obsidianite"
+  "obsidianotion"
+  "obsidian_ia"
+  "obsidian_vibrant"
+  "obuntu"
+  "oistnb"
+  "old-world"
+  "oldsidian-purple"
+  "oledblack"
+  "oliviers-theme"
+  "omega"
+  "onenice"
+  "ono-sendai"
+  "orange"
+  "oreo"
+  "origami"
+  "origin"
+  "osaka-jade"
+  "oscura"
+  "overcast"
+  "oxygen"
+  "pale"
+  "panic-mode"
+  "penumbra"
+  "phoenix"
+  "pine-forest-berry"
+  "pink-topaz"
+  "pisum"
+  "planetary"
+  "planetz-roller"
+  "playground"
+  "pln"
+  "poimandres"
+  "poimandres-extended"
+  "polka"
+  "pomme-notes"
+  "powered-by-lancer"
+  "powered-by-lancer-retouched"
+  "primary"
+  "prime"
+  "prism"
+  "proper-dark"
+  "protocolblue"
+  "prussian-blue"
+  "publisher"
+  "pure"
+  "purple-aurora"
+  "purple-owl"
+  "pxld"
+  "qlean"
+  "quietus"
+  "quillcode"
+  "radiance"
+  "ravenloft"
+  "red-graphite"
+  "red-shadow"
+  "redshift-oled-blue-light-filter"
+  "refined-default"
+  "reshi"
+  "retro-windows"
+  "retroma"
+  "retronotes"
+  "retroos-98"
+  "reverie"
+  "rezin"
+  "ribbons"
+  "rift"
+  "rmaki"
+  "robsi"
+  "rose-pine"
+  "rose-pine-2"
+  "rose-pine-moon"
+  "rose-red"
+  "royal-velvet"
+  "sad-machine-druid"
+  "sakurajima"
+  "salem"
+  "sanctum"
+  "sanctum-reborn"
+  "sandover"
+  "sandstorm"
+  "sanguine"
+  "sea-glass"
+  "seamless-view"
+  "sei"
+  "serenity"
+  "serif"
+  "serika"
+  "shade-sanctuary"
+  "shadeflow"
+  "shiba-inu"
+  "shimmering-focus"
+  "simple"
+  "simple-color"
+  "simplicity"
+  "simply-colorful"
+  "sodalite"
+  "solarized"
+  "soli-deo-gloria"
+  "solitude"
+  "soloing"
+  "soothe"
+  "space"
+  "sparkling-night"
+  "sparkling-wisdom"
+  "spectrum"
+  "spectrum-blue"
+  "spectrumplus"
+  "spring"
+  "spy-terminal"
+  "sqdthone"
+  "strict"
+  "subtlegold"
+  "suddha"
+  "sunbather"
+  "synthwave"
+  "synthwave-84"
+  "tech001"
+  "terminal"
+  "terminal2k"
+  "terraflow"
+  "theme-that-shall-not-be-named"
+  "things"
+  "things-3"
+  "tiniri"
+  "tokyo-night"
+  "tokyo-night-simple"
+  "tokyo-night-storm"
+  "tomorrow"
+  "tomorrow-night-bright"
+  "toms-theme"
+  "trace-labs"
+  "transient"
+  "transparent"
+  "true-black"
+  "typewriter"
+  "typomagical"
+  "typora-vue"
+  "tyrone-neon"
+  "ukiyo"
+  "ultra-lobster"
+  "underwater"
+  "universitario"
+  "ursa"
+  "vanilla-amoled"
+  "vanilla-amoled-color"
+  "vanilla-palettes"
+  "vauxhall"
+  "velocity"
+  "velvet-moon"
+  "venom"
+  "vercel-geist"
+  "vermilion"
+  "vesnea-vibe"
+  "vesper"
+  "vibrant"
+  "vicious"
+  "violet-evening"
+  "virgo"
+  "vortex"
+  "wasp"
+  "wikipedia"
+  "wilcoxone"
+  "willemstad"
+  "wombat"
+  "wy-console"
+  "wyrd"
+  "xscriptor"
+  "yue"
+  "zario"
+  "zen"
+  "zenburn"
+  "abate"
+  "agate"
+  "al-dente"
+  "comfort"
+  "dashboard"
+  "dayspring"
+  "gdct"
+  "handwriting-kalam"
+  "ink"
+  "lavender-mist"
+  "mint-breeze"
+  "neuborder"
+  "nordic"
+  "northern-sky"
+  "nota-limonada-light"
+  "obsidian-boom"
+  "parfait"
+  "perso"
+  "sparkling-day"
+  "w95"
+  "winter-spices"
+  "wiselight"
+)
+
+# Use specific themes if provided, otherwise all
+if [[ ${#SPECIFIC_THEMES[@]} -gt 0 ]]; then
+  THEMES=("${SPECIFIC_THEMES[@]}")
+else
+  THEMES=("${ALL_THEMES[@]}")
+fi
+
+echo "=== Quartz Themes v5 Reset ==="
+echo "Themes to reset: ${#THEMES[@]}"
+echo "Target branch:   ${TARGET_BRANCH}"
+echo "Parallel jobs:   ${JOBS}"
+echo "Dry run:         ${DRY_RUN}"
+echo ""
+
+# --- Setup ---
+WORK_DIR="$(mktemp -d)"
+LOG_DIR="${WORK_DIR}/logs"
+mkdir -p "$LOG_DIR"
+trap 'rm -rf "$WORK_DIR"' EXIT
+
+echo "Working directory: ${WORK_DIR}"
+
+# Clone template once as a bare reference to get the tree object
+echo "Fetching template ${TEMPLATE_BRANCH} branch..."
+git clone --bare --single-branch -b "$TEMPLATE_BRANCH" "$TEMPLATE_REPO" "$WORK_DIR/template.git" 2>/dev/null
+TEMPLATE_COMMIT=$(git -C "$WORK_DIR/template.git" rev-parse HEAD)
+echo "Template commit: ${TEMPLATE_COMMIT}"
+echo ""
+
+# --- Worker function (called per theme, possibly in parallel) ---
+reset_theme() {
+  local theme="$1"
+  local log_file="${LOG_DIR}/${theme}.log"
+
+  {
+    echo "--- START ${theme} ---"
+
+    # Parse theme/variation from dotted name
+    # e.g. "catppuccin.frappe" → THEME=catppuccin, VARIATION=frappe
+    # e.g. "rose-pine" → THEME=rose-pine, VARIATION=null
+    local IN="${theme}.null"
+    local -a parts
+    IFS='.' read -ra parts <<< "$IN"
+    local THEME="${parts[0]}"
+    local VARIATION="${parts[1]}"
+
+    local repo_dir="${WORK_DIR}/repos/${theme}"
+
+    # Clone the theme repo
+    if ! git clone --depth=1 "git@github.com:quartz-themes/${theme}.git" "$repo_dir" -b "$TARGET_BRANCH" 2>/dev/null; then
+      # v5 branch might not exist yet — clone whatever default branch, then create v5
+      if ! git clone --depth=1 "git@github.com:quartz-themes/${theme}.git" "$repo_dir" 2>/dev/null; then
+        echo "SKIP ${theme}: clone failed"
+        echo "--- END ${theme} (SKIP) ---"
+        return 1
+      fi
+    fi
+
+    cd "$repo_dir"
+
+    # Ensure we're on the target branch
+    git checkout -B "$TARGET_BRANCH" 2>/dev/null
+
+    # Fetch the template tree into this repo
+    git remote add template "$TEMPLATE_REPO" 2>/dev/null || true
+    git fetch --depth=1 template "$TEMPLATE_BRANCH" 2>/dev/null
+
+    # Nuclear reset: replace the entire index with the template's tree
+    local template_tree
+    template_tree=$(git rev-parse "template/${TEMPLATE_BRANCH}^{tree}")
+    git read-tree --reset -u "$template_tree"
+
+    # Apply per-repo overrides to both config files
+    for config_file in quartz.config.yaml quartz.config.default.yaml; do
+      if [[ -f "$config_file" ]]; then
+        sed -i "s|pageTitle: .*|pageTitle: ${theme}|" "$config_file"
+        sed -i "s|baseUrl: .*|baseUrl: quartz-themes.github.io/${theme}|" "$config_file"
+        sed -i "s|      theme: [a-zA-Z].*|      theme: ${THEME}|" "$config_file"
+        sed -i "s|      variation: .*|      variation: ${VARIATION}|" "$config_file"
+      fi
+    done
+
+    # Stage everything
+    git add -A
+
+    # Check if there are actual changes to commit
+    if git diff --cached --quiet 2>/dev/null; then
+      echo "OK ${theme}: already up to date"
+    else
+      git -c user.name="quartz-themes-bot" -c user.email="bot@quartz-themes.github.io" \
+        commit -m "Reset to v5 template ($(date -u +%Y-%m-%d))" --quiet
+
+      if [[ "$DRY_RUN" == "true" ]]; then
+        echo "DRY-RUN ${theme}: would force-push to ${TARGET_BRANCH}"
+      else
+        git push origin "$TARGET_BRANCH" --force --quiet
+        echo "OK ${theme}: reset and pushed"
+      fi
+    fi
+
+    # Cleanup
+    cd "$WORK_DIR"
+    rm -rf "$repo_dir"
+
+    echo "--- END ${theme} ---"
+  } > "$log_file" 2>&1
+
+  # Print summary line to stdout
+  local result
+  result=$(grep -E "^(OK|SKIP|DRY-RUN)" "$log_file" | head -1)
+  echo "$result"
+}
+
+export -f reset_theme
+export WORK_DIR LOG_DIR TEMPLATE_REPO TEMPLATE_BRANCH TARGET_BRANCH DRY_RUN TEMPLATE_COMMIT
+
+# --- Execute ---
+FAILED=0
+SUCCEEDED=0
+SKIPPED=0
+TOTAL=${#THEMES[@]}
+
+if command -v parallel &>/dev/null && [[ "$JOBS" -gt 1 ]]; then
+  echo "Using GNU parallel with ${JOBS} jobs..."
+  echo ""
+  printf '%s\n' "${THEMES[@]}" | parallel --jobs "$JOBS" --keep-order --line-buffer reset_theme {}
+else
+  if [[ "$JOBS" -gt 1 ]]; then
+    echo "GNU parallel not found. Running sequentially..."
+  else
+    echo "Running sequentially..."
+  fi
+  echo ""
+
+  for theme in "${THEMES[@]}"; do
+    reset_theme "$theme" || true
+  done
+fi
+
+# Count results from log files (avoids subshell counter issues)
+for log in "$LOG_DIR"/*.log; do
+  [[ -f "$log" ]] || continue
+  if grep -q "^OK\|^DRY-RUN" "$log" 2>/dev/null; then
+    ((SUCCEEDED++)) || true
+  elif grep -q "^SKIP" "$log" 2>/dev/null; then
+    ((SKIPPED++)) || true
+  else
+    ((FAILED++)) || true
+  fi
+done
+
+echo ""
+echo "=== Summary ==="
+echo "Total:     ${TOTAL}"
+echo "Succeeded: ${SUCCEEDED}"
+echo "Skipped:   ${SKIPPED}"
+echo "Failed:    $((TOTAL - SUCCEEDED - SKIPPED))"
+echo ""
+
+if [[ -d "$LOG_DIR" ]]; then
+  for log in "$LOG_DIR"/*.log; do
+    [[ -f "$log" ]] || continue
+    if ! grep -q "^OK\|^DRY-RUN" "$log" 2>/dev/null; then
+      theme_name=$(basename "$log" .log)
+      echo "--- Failed: ${theme_name} ---"
+      cat "$log"
+      echo ""
+    fi
+  done
+fi
+
+if [[ "$DRY_RUN" == "true" ]]; then
+  echo "(Dry run — nothing was pushed)"
+fi

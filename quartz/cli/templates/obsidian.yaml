@@ -249,7 +249,7 @@ plugins:
   - source: github:saberzero1/quartz-themes
     enabled: true
     options:
-      theme: "default"
+      theme: default
 layout:
   groups:
     toolbar:

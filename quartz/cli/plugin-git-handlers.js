@@ -86,7 +86,24 @@ async function runParallel(items, concurrency, fn) {
   return results
 }
 
+/**
+ * Check whether a plugin's .gitignore excludes dist/.
+ * When dist/ is gitignored, the plugin cannot ship pre-built output in version
+ * control (e.g. because it uses tree-shaking) and must always be built locally.
+ */
+function isDistGitignored(pluginDir) {
+  const gitignorePath = path.join(pluginDir, ".gitignore")
+  if (!fs.existsSync(gitignorePath)) return false
+
+  const lines = fs.readFileSync(gitignorePath, "utf-8").split("\n")
+  return lines.some((line) => {
+    const trimmed = line.trim()
+    return trimmed === "dist" || trimmed === "dist/" || trimmed === "/dist" || trimmed === "/dist/"
+  })
+}
+
 function needsBuild(pluginDir) {
+  if (isDistGitignored(pluginDir)) return true
   const distDir = path.join(pluginDir, "dist")
   return !fs.existsSync(distDir)
 }
@@ -863,7 +880,9 @@ export async function handlePluginRestore() {
         styleText("cyan", `→ ${name}: cloning ${entry.resolved}@${entry.commit.slice(0, 7)}...`),
       )
       const branchArg = entry.ref ? ` --branch ${entry.ref}` : ""
-      execSync(`git clone${branchArg} ${entry.resolved} ${pluginDir}`, { stdio: "ignore" })
+      execSync(`git clone --depth 1${branchArg} ${entry.resolved} ${pluginDir}`, {
+        stdio: "ignore",
+      })
       execSync(`git checkout ${entry.commit}`, { cwd: pluginDir, stdio: "ignore" })
       console.log(styleText("green", `✓ ${name} restored`))
       restoredPlugins.push({ name, pluginDir })
@@ -974,7 +993,8 @@ export async function handlePluginResolve({ dryRun = false } = {}) {
   // Find config entries whose source is a git/local-resolvable URL and not yet in lockfile
   const missing = pluginsJson.plugins.filter((entry) => {
     const name = extractPluginName(entry.source)
-    if (lockfile.plugins[name]) return false
+    const pluginDir = path.join(PLUGINS_DIR, name)
+    if (lockfile.plugins[name] && fs.existsSync(pluginDir)) return false
     // Only attempt sources that parseGitSource can handle (git URLs + local paths)
     const src = entry.source
     return (
@@ -1094,6 +1114,21 @@ export async function handlePluginResolve({ dryRun = false } = {}) {
     })
     for (const ok of results) {
       if (!ok) failed++
+    }
+    await regeneratePluginIndex()
+  }
+
+  const configNames = new Set(pluginsJson.plugins.map((entry) => extractPluginName(entry.source)))
+  const orphans = Object.keys(lockfile.plugins).filter((name) => !configNames.has(name))
+  if (orphans.length > 0) {
+    console.log()
+    for (const name of orphans) {
+      const pluginDir = path.join(PLUGINS_DIR, name)
+      if (fs.existsSync(pluginDir)) {
+        fs.rmSync(pluginDir, { recursive: true })
+      }
+      delete lockfile.plugins[name]
+      console.log(styleText("yellow", `✗ Removed ${name} (not in config)`))
     }
     await regeneratePluginIndex()
   }

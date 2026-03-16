@@ -201,6 +201,37 @@ export const layout = await loadQuartzLayout({
 })
 ```
 
+### Receiving YAML Options in Component-Only Plugins
+
+Component plugins that also belong to a processing category (transformer, filter, emitter, page type) receive options through their factory function automatically. However, **component-only plugins** — those whose manifest declares only `"category": ["component"]` — are loaded via side-effect import and don't go through the factory path.
+
+To receive YAML options in a component-only plugin, export an `init` function from your entry point:
+
+```ts title="src/index.ts"
+export function init(options?: Record<string, unknown>): void {
+  // options contains merged defaultOptions + user's YAML options
+  const myFlag = (options?.myFlag as boolean) ?? false
+  // Use options to configure registrations, global state, etc.
+}
+```
+
+Quartz's config-loader calls `init()` after importing the module, passing the merged result of your manifest's `defaultOptions` and the user's `options` from `quartz.config.yaml`. The merge follows the same `{ ...defaultOptions, ...userOptions }` pattern used for processing plugins — user values take precedence.
+
+Declare your defaults in `package.json`:
+
+```json title="package.json"
+{
+  "quartz": {
+    "category": ["component"],
+    "defaultOptions": {
+      "myFlag": false
+    }
+  }
+}
+```
+
+If your plugin does not export `init`, it continues to work as a pure side-effect import — this is fully backward compatible.
+
 ## Internal Components
 
 Quartz also has internal components that provide layout utilities. These live in `quartz/components/` and are primarily used for structural purposes:

@@ -27,6 +27,7 @@ import {
   handlePluginRestore,
   handlePluginCheck,
   handlePluginUpdate,
+  handlePluginResolve,
 } from "./plugin-git-handlers.js"
 import {
   configExists,
@@ -36,6 +37,7 @@ import {
   writePluginsJson,
   extractPluginName,
   updateGlobalConfig,
+  LOCKFILE_PATH,
 } from "./plugin-data.js"
 import {
   UPSTREAM_NAME,
@@ -273,15 +275,12 @@ See the [documentation](https://quartz.jzhao.xyz) for how to get started.
   // Strip protocol prefix if user included it
   baseUrl = baseUrl.replace(/^https?:\/\//, "").replace(/\/+$/, "")
 
-  // Create config if it doesn't exist
-  if (!configExists()) {
-    if (template && template !== "default") {
-      createConfigFromTemplate(template)
-      console.log(styleText("green", `Created quartz.config.yaml from '${template}' template`))
-    } else {
-      createConfigFromTemplate("default")
-      console.log(styleText("green", "Created quartz.config.yaml from defaults"))
-    }
+  if (template && template !== "default") {
+    createConfigFromTemplate(template)
+    console.log(styleText("green", `Created quartz.config.yaml from '${template}' template`))
+  } else {
+    createConfigFromTemplate("default")
+    console.log(styleText("green", "Created quartz.config.yaml from defaults"))
   }
 
   // Update markdownLinkResolution in the crawl-links plugin options via YAML config
@@ -301,6 +300,9 @@ See the [documentation](https://quartz.jzhao.xyz) for how to get started.
 
   // Update baseUrl in configuration
   updateGlobalConfig({ baseUrl })
+
+  // install plugins referenced in the template config
+  await handlePluginResolve()
 
   // setup remote
   execSync(`git remote show upstream || git remote add upstream ${QUARTZ_SOURCE_REPO}`, {
@@ -481,7 +483,7 @@ export async function handleBuild(argv) {
           status >= 200 && status < 300
             ? styleText("green", `[${status}]`)
             : styleText("red", `[${status}]`)
-        console.log(statusString + styleText("gray", ` ${argv.baseDir}${req.url}`))
+        console.log(statusString + styleText("grey", ` ${argv.baseDir}${req.url}`))
         release()
       }
 
@@ -492,7 +494,7 @@ export async function handleBuild(argv) {
         })
         console.log(
           styleText("yellow", "[302]") +
-            styleText("gray", ` ${argv.baseDir}${req.url} -> ${newFp}`),
+            styleText("grey", ` ${argv.baseDir}${req.url} -> ${newFp}`),
         )
         res.end()
       }
@@ -568,7 +570,7 @@ export async function handleBuild(argv) {
       .on("change", () => build(clientRefresh))
       .on("unlink", () => build(clientRefresh))
 
-    console.log(styleText("gray", "hint: exit with ctrl+c"))
+    console.log(styleText("grey", "hint: exit with ctrl+c"))
   }
 }
 
@@ -583,16 +585,50 @@ export async function handleUpgrade(argv) {
   console.log("Backing up your content")
   execSync(`git remote show upstream || git remote add upstream ${QUARTZ_SOURCE_REPO}`)
   await stashContentFolder(contentFolder)
+
+  const lockfileBackup = LOCKFILE_PATH + ".bak"
+  const hasLockfile = fs.existsSync(LOCKFILE_PATH)
+  if (hasLockfile) {
+    fs.copyFileSync(LOCKFILE_PATH, lockfileBackup)
+  }
+
   console.log(
     "Pulling updates... you may need to resolve some `git` conflicts if you've made changes to components or plugins.",
   )
 
+  let pullOk = false
   try {
     gitPull(UPSTREAM_NAME, QUARTZ_SOURCE_BRANCH)
+    pullOk = true
   } catch {
-    console.log(styleText("red", "An error occurred above while pulling updates."))
-    await popContentFolder(contentFolder)
-    return
+    if (hasLockfile) {
+      try {
+        fs.copyFileSync(lockfileBackup, LOCKFILE_PATH)
+        execSync(`git add ${LOCKFILE_PATH}`)
+        const remaining = execSync("git diff --name-only --diff-filter=U", {
+          encoding: "utf-8",
+        }).trim()
+        if (remaining.length === 0) {
+          execSync("git commit --no-edit")
+          pullOk = true
+          console.log(styleText("cyan", "Resolved quartz.lock.json merge conflict automatically."))
+        }
+      } catch {
+        // Could not auto-resolve, fall through to manual resolution
+      }
+    }
+
+    if (!pullOk) {
+      console.log(styleText("red", "An error occurred above while pulling updates."))
+      await popContentFolder(contentFolder)
+      if (fs.existsSync(lockfileBackup)) fs.unlinkSync(lockfileBackup)
+      return
+    }
+  }
+
+  if (hasLockfile && fs.existsSync(lockfileBackup)) {
+    fs.copyFileSync(lockfileBackup, LOCKFILE_PATH)
+    fs.unlinkSync(lockfileBackup)
   }
 
   await popContentFolder(contentFolder)

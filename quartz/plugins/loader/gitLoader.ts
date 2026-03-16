@@ -23,7 +23,7 @@ export interface GitPluginSpec {
   name: string
   /** Git repository URL or absolute local path */
   repo: string
-  /** Git ref (branch, tag, or commit hash). Defaults to 'main' */
+  /** Git ref (branch, tag, or commit hash). Omit to use the remote's default branch. */
   ref?: string
   /** Optional subdirectory within the repo if plugin is not at root */
   subdir?: string
@@ -80,7 +80,7 @@ export function parsePluginSource(source: string): GitPluginSpec {
     return {
       name: repo,
       repo: `https://github.com/${owner}/${repo}.git`,
-      ref: ref || "main",
+      ref: ref || undefined,
     }
   }
 
@@ -89,14 +89,14 @@ export function parsePluginSource(source: string): GitPluginSpec {
     const raw = source.replace("git+", "")
     const [url, ref] = raw.split("#")
     const name = extractRepoName(url)
-    return { name, repo: url, ref: ref || "main" }
+    return { name, repo: url, ref: ref || undefined }
   }
 
   // Handle direct HTTPS URL (GitHub, GitLab, etc.)
   if (source.startsWith("https://")) {
     const [url, ref] = source.split("#")
     const name = extractRepoName(url)
-    return { name, repo: url, ref: ref || "main" }
+    return { name, repo: url, ref: ref || undefined }
   }
 
   // Assume it's a plain repo name and try github
@@ -105,7 +105,6 @@ export function parsePluginSource(source: string): GitPluginSpec {
     return {
       name: parts[1],
       repo: `https://github.com/${source}.git`,
-      ref: "main",
     }
   }
 
@@ -198,7 +197,8 @@ export async function installPlugin(
   }
 
   if (options.verbose) {
-    console.log(styleText("cyan", `→`), `Cloning ${spec.name} from ${spec.repo}#${spec.ref}...`)
+    const refSuffix = spec.ref ? `#${spec.ref}` : ""
+    console.log(styleText("cyan", `→`), `Cloning ${spec.name} from ${spec.repo}${refSuffix}...`)
   }
 
   // Clone the repository

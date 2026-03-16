@@ -536,3 +536,5 @@ npx quartz plugin prune --dry-run
 ## Component Plugins
 
 For plugins that provide visual components (like Explorer, Graph, Search), see the [[creating components|creating component plugins]] guide.
+
+Component-only plugins (those with `"category": ["component"]` in their manifest) are loaded via side-effect import rather than a factory function. If your component-only plugin needs to receive user options from `quartz.config.yaml`, export an `init(options)` function — see [[creating components#Receiving YAML Options in Component-Only Plugins|receiving YAML options]] for details.

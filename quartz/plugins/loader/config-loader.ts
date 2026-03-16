@@ -308,7 +308,13 @@ export async function loadQuartzConfig(
         // in their index module to register functionality.
         const entryPoint = getPluginEntryPoint(gitSpec.name, gitSpec.subdir)
         try {
-          await import(toFileUrl(entryPoint))
+          const module = await import(toFileUrl(entryPoint))
+          // If the module exports an init() function, call it with merged options
+          // so component-only plugins can receive user configuration from YAML.
+          if (typeof module.init === "function") {
+            const options = { ...manifest?.defaultOptions, ...entry.options }
+            await module.init(Object.keys(options).length > 0 ? options : undefined)
+          }
         } catch (e) {
           // Side-effect import failed — continue with manifest-based loading
         }

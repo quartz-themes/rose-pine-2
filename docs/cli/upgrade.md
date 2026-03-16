@@ -25,7 +25,9 @@ When you run `npx quartz upgrade`, Quartz performs the following steps:
 
 Because Quartz allows you to customize almost every part of the code, upgrades can sometimes result in merge conflicts. This happens if you have modified a file that the Quartz team has also updated.
 
-If a conflict occurs:
+Quartz automatically handles merge conflicts in `quartz.lock.json` by backing up your lockfile before pulling and restoring it afterward. This prevents the most common source of conflicts during upgrades.
+
+For other files, if a conflict occurs:
 
 1. Git will mark the conflicting sections in the affected files.
 2. You will need to open these files and manually choose which changes to keep.
