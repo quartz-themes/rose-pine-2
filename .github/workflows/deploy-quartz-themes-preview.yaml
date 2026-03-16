@@ -66,10 +66,7 @@ jobs:
       - name: Push updates
         uses: nick-fields/retry@v3
         with:
-          command: npm ci
-          timeout_minutes: 3
-          max_attempts: 3
-          on_retry_command: |
+          command: |
             git config pull.rebase >&- || git config pull.rebase true
             git config --global user.email "github-actions[bot]@users.noreply.github.com"
             git config --global user.name "github-actions[bot]"
@@ -80,6 +77,8 @@ jobs:
             git add quartz.config.yaml
             git commit -m "synced dependencies"
             git push
+          timeout_minutes: 3
+          max_attempts: 3
 
       - name: Build Quartz Docs
         uses: nick-fields/retry@v3
