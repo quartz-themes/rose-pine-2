@@ -21,30 +21,52 @@ set -euo pipefail
 TEMPLATE_REPO="https://github.com/quartz-themes/quartz-themes-preview-template.git"
 TEMPLATE_BRANCH="v5"
 TARGET_BRANCH="v5"
+ORG="quartz-themes"
+ENVIRONMENT_NAME="github-pages"
+REPO_VISIBILITY="public"
 DEFAULT_JOBS=4
 DRY_RUN=false
 JOBS="$DEFAULT_JOBS"
+CREATE_MISSING=false
 
 # --- Parse arguments ---
 SPECIFIC_THEMES=()
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --dry-run)  DRY_RUN=true; shift ;;
-    --jobs)     JOBS="$2"; shift 2 ;;
-    -j)         JOBS="$2"; shift 2 ;;
-    -j*)        JOBS="${1#-j}"; shift ;;
+    --dry-run)        DRY_RUN=true; shift ;;
+    --jobs)           JOBS="$2"; shift 2 ;;
+    -j)               JOBS="$2"; shift 2 ;;
+    -j*)              JOBS="${1#-j}"; shift ;;
+    --create-missing) CREATE_MISSING=true; shift ;;
     --help|-h)
       echo "Usage: $0 [--dry-run] [--jobs N] [theme1 theme2 ...]"
       echo ""
       echo "Options:"
-      echo "  --dry-run    Show what would happen without pushing"
-      echo "  --jobs N     Number of parallel workers (default: $DEFAULT_JOBS)"
-      echo "  theme1 ...   Reset only specific themes (default: all)"
+      echo "  --dry-run         Show what would happen without pushing"
+      echo "  --jobs N          Number of parallel workers (default: $DEFAULT_JOBS)"
+      echo "  --create-missing  Create missing repos in ${ORG} if clone fails"
+      echo "  theme1 ...        Reset only specific themes (default: all)"
       exit 0
       ;;
     *)          SPECIFIC_THEMES+=("$1"); shift ;;
   esac
 done
+
+NEED_GH=false
+if [[ "$DRY_RUN" == "false" ]]; then
+  NEED_GH=true
+fi
+
+if [[ "$NEED_GH" == "true" ]]; then
+  if ! command -v gh &>/dev/null; then
+    echo "Error: gh CLI is required for environment/default-branch/branch-delete operations."
+    exit 1
+  fi
+  if ! gh auth status -h github.com &>/dev/null; then
+    echo "Error: gh CLI is not authenticated. Run 'gh auth login'."
+    exit 1
+  fi
+fi
 
 # --- All themes (same list as manual-update.sh) ---
 declare -a ALL_THEMES=(
@@ -538,13 +560,30 @@ reset_theme() {
 
     local repo_dir="${WORK_DIR}/repos/${theme}"
 
-    # Clone the theme repo
-    if ! git clone --depth=1 "git@github.com:quartz-themes/${theme}.git" "$repo_dir" -b "$TARGET_BRANCH" 2>/dev/null; then
+    if ! git clone --depth=1 "git@github.com:${ORG}/${theme}.git" "$repo_dir" -b "$TARGET_BRANCH" 2>/dev/null; then
       # v5 branch might not exist yet — clone whatever default branch, then create v5
-      if ! git clone --depth=1 "git@github.com:quartz-themes/${theme}.git" "$repo_dir" 2>/dev/null; then
-        echo "SKIP ${theme}: clone failed"
-        echo "--- END ${theme} (SKIP) ---"
-        return 1
+      if ! git clone --depth=1 "git@github.com:${ORG}/${theme}.git" "$repo_dir" 2>/dev/null; then
+        if [[ "$CREATE_MISSING" == "true" ]]; then
+          if [[ "$DRY_RUN" == "true" ]]; then
+            echo "DRY-RUN ${theme}: would create repo in ${ORG}"
+            echo "--- END ${theme} (SKIP) ---"
+            return 1
+          fi
+          if ! gh api -X POST "orgs/${ORG}/repos" -f name="$theme" -f visibility="$REPO_VISIBILITY" &>/dev/null; then
+            echo "SKIP ${theme}: create failed"
+            echo "--- END ${theme} (SKIP) ---"
+            return 1
+          fi
+          if ! git clone --depth=1 "git@github.com:${ORG}/${theme}.git" "$repo_dir" 2>/dev/null; then
+            echo "SKIP ${theme}: clone failed"
+            echo "--- END ${theme} (SKIP) ---"
+            return 1
+          fi
+        else
+          echo "SKIP ${theme}: clone failed"
+          echo "--- END ${theme} (SKIP) ---"
+          return 1
+        fi
       fi
     fi
 
@@ -572,21 +611,81 @@ reset_theme() {
       fi
     done
 
+    local updated=false
+
     # Stage everything
     git add -A
 
     # Check if there are actual changes to commit
     if git diff --cached --quiet 2>/dev/null; then
-      echo "OK ${theme}: already up to date"
+      updated=false
     else
       git -c user.name="quartz-themes-bot" -c user.email="bot@quartz-themes.github.io" \
         commit -m "Reset to v5 template ($(date -u +%Y-%m-%d))" --quiet
 
       if [[ "$DRY_RUN" == "true" ]]; then
-        echo "DRY-RUN ${theme}: would force-push to ${TARGET_BRANCH}"
+        updated=true
       else
         git push origin "$TARGET_BRANCH" --force --quiet
+        updated=true
+      fi
+    fi
+
+    if [[ "$DRY_RUN" == "false" ]]; then
+      local remote_heads
+      if ! remote_heads=$(git ls-remote --heads origin "$TARGET_BRANCH" 2>/dev/null); then
+        echo "SKIP ${theme}: unable to check remote branches"
+        echo "--- END ${theme} (SKIP) ---"
+        return 1
+      fi
+      if [[ -z "$remote_heads" ]]; then
+        if ! git push origin "$TARGET_BRANCH" --quiet; then
+          echo "SKIP ${theme}: failed to push ${TARGET_BRANCH}"
+          echo "--- END ${theme} (SKIP) ---"
+          return 1
+        fi
+      fi
+
+      if ! gh api -X PUT "repos/${ORG}/${theme}/environments/${ENVIRONMENT_NAME}" \
+        -f deployment_branch_policy[protected_branches]=false \
+        -f deployment_branch_policy[custom_branch_policies]=true &>/dev/null; then
+        echo "SKIP ${theme}: failed to update ${ENVIRONMENT_NAME} environment"
+        echo "--- END ${theme} (SKIP) ---"
+        return 1
+      fi
+
+      if ! gh api -X POST "repos/${ORG}/${theme}/environments/${ENVIRONMENT_NAME}/deployment-branch-policies" \
+        -f type=branch -f name="${TARGET_BRANCH}" &>/dev/null; then
+        gh api -X PUT "repos/${ORG}/${theme}/environments/${ENVIRONMENT_NAME}" \
+          -f deployment_branch_policy[protected_branches]=false \
+          -f deployment_branch_policy[custom_branch_policies]=false &>/dev/null || true
+        echo "SKIP ${theme}: failed to add ${TARGET_BRANCH} branch policy"
+        echo "--- END ${theme} (SKIP) ---"
+        return 1
+      fi
+
+      if ! gh api -X PATCH "repos/${ORG}/${theme}" -f name="${theme}" -f default_branch="${TARGET_BRANCH}" &>/dev/null; then
+        echo "SKIP ${theme}: failed to set default branch"
+        echo "--- END ${theme} (SKIP) ---"
+        return 1
+      fi
+
+      if ! gh api -X DELETE "repos/${ORG}/${theme}/git/refs/heads/v4" &>/dev/null; then
+        echo "INFO ${theme}: v4 branch not deleted"
+      fi
+    fi
+
+    if [[ "$DRY_RUN" == "true" ]]; then
+      if [[ "$updated" == "true" ]]; then
+        echo "DRY-RUN ${theme}: would force-push to ${TARGET_BRANCH}"
+      else
+        echo "DRY-RUN ${theme}: already up to date"
+      fi
+    else
+      if [[ "$updated" == "true" ]]; then
         echo "OK ${theme}: reset and pushed"
+      else
+        echo "OK ${theme}: already up to date"
       fi
     fi
 
@@ -604,7 +703,7 @@ reset_theme() {
 }
 
 export -f reset_theme
-export WORK_DIR LOG_DIR TEMPLATE_REPO TEMPLATE_BRANCH TARGET_BRANCH DRY_RUN TEMPLATE_COMMIT
+export WORK_DIR LOG_DIR TEMPLATE_REPO TEMPLATE_BRANCH TARGET_BRANCH DRY_RUN TEMPLATE_COMMIT ORG ENVIRONMENT_NAME CREATE_MISSING REPO_VISIBILITY
 
 # --- Execute ---
 FAILED=0
