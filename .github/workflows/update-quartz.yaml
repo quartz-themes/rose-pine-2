@@ -1,0 +1,57 @@
+name: Update Quartz (v5)
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "20 3 * * 1"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: "quartz-upgrade"
+  cancel-in-progress: false
+
+jobs:
+  upgrade:
+    if: ${{ github.repository != 'quartz-themes/quartz-themes-preview-template' }}
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: Force HTTPS for GitHub dependencies
+        run: |
+          git config --global url."https://github.com/".insteadOf "git@github.com:"
+          git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
+          git config --global url."https://github.com/".insteadOf "git://github.com/"
+
+      - name: Ensure upstream remote exists
+        run: |
+          git remote add upstream https://github.com/jackyzha0/quartz.git 2>/dev/null || true
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Quartz upgrade
+        run: |
+          npx quartz plugin restore
+          npx quartz upgrade
+
+      - name: Commit and push changes (if any)
+        run: |
+          if [[ -z "$(git status --porcelain)" ]]; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git add -A
+          git commit -m "chore: quartz upgrade ($(date -u +%Y-%m-%d))"
+          git push
