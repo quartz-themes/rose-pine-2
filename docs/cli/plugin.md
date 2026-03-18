@@ -213,6 +213,37 @@ npx quartz plugin remove my-local-plugin
 npx quartz plugin add github:username/my-local-plugin
 ```
 
+### Subdirectory (Monorepo) Plugins
+
+Some plugins live in a subdirectory of a larger repository rather than at the root. For these, you can specify the plugin source as an object in `quartz.config.yaml` with a `subdir` field:
+
+```yaml title="quartz.config.yaml"
+plugins:
+  - source:
+      repo: "https://github.com/username/monorepo.git"
+      subdir: plugin
+    enabled: true
+```
+
+This tells Quartz to clone the full repository but install only the contents of the specified subdirectory.
+
+You can combine `subdir` with `ref` to pin a branch or tag, and `name` to override the plugin directory name:
+
+```yaml title="quartz.config.yaml"
+plugins:
+  - source:
+      repo: "https://github.com/username/monorepo.git"
+      subdir: packages/my-plugin
+      ref: v2.0
+      name: my-plugin
+    enabled: true
+```
+
+See [[configuration#Advanced Source Options|Advanced Source Options]] for the full reference on object source fields.
+
+> [!note]
+> The `plugin add` CLI command works with string sources. To use the object source format with `subdir`, edit `quartz.config.yaml` directly, then run `npx quartz plugin resolve` to install it.
+
 ## Interactive Mode
 
 Running the plugin command without any subcommand will launch the [[cli/tui|TUI]], which provides a visual interface for all these operations.

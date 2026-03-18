@@ -73,7 +73,7 @@ export async function handlePluginSearch(query) {
   const searchQuery = query || "quartz-plugin"
 
   console.log(`Searching npm for packages matching "${searchQuery}"...`)
-  console.log(styleText("grey", "(This may take a moment)\n"))
+  console.log(styleText("gray", "(This may take a moment)\n"))
 
   try {
     const result = execSync(`npm search ${searchQuery} --json`, { encoding: "utf-8" })
@@ -96,7 +96,7 @@ export async function handlePluginSearch(query) {
     for (const pkg of quartzPlugins.slice(0, 20)) {
       console.log(`  ${styleText("cyan", pkg.name)}@${pkg.version}`)
       if (pkg.description) {
-        console.log(`    ${styleText("grey", pkg.description)}`)
+        console.log(`    ${styleText("gray", pkg.description)}`)
       }
       console.log()
     }

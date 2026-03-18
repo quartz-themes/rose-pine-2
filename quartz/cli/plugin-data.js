@@ -83,32 +83,73 @@ export function writeLockfile(lockfile) {
   fs.writeFileSync(LOCKFILE_PATH, JSON.stringify(lockfile, null, 2) + "\n")
 }
 
+/**
+ * Normalizes a source value to a URL string.
+ * Source can be a plain string (e.g. "github:owner/repo") or an object
+ * with { name?, repo, subdir? } for installing from a subdirectory of a repo.
+ */
+export function getSourceUrl(source) {
+  if (typeof source === "string") return source
+  if (typeof source === "object" && source !== null && typeof source.repo === "string") {
+    return source.repo
+  }
+  throw new Error(`Invalid plugin source: ${JSON.stringify(source)}`)
+}
+
+/**
+ * Returns the subdir from an object source, or undefined for string sources.
+ */
+export function getSourceSubdir(source) {
+  if (typeof source === "object" && source !== null && typeof source.subdir === "string") {
+    return source.subdir
+  }
+  return undefined
+}
+
+/**
+ * Returns a display-friendly string for a source value.
+ */
+export function formatSource(source) {
+  if (typeof source === "string") return source
+  if (typeof source === "object" && source !== null) {
+    const parts = [source.repo]
+    if (source.subdir) parts.push(`(subdir: ${source.subdir})`)
+    return parts.join(" ")
+  }
+  return String(source)
+}
+
 export function isLocalSource(source) {
-  if (source.startsWith("./") || source.startsWith("../") || source.startsWith("/")) {
+  const url = getSourceUrl(source)
+  if (url.startsWith("./") || url.startsWith("../") || url.startsWith("/")) {
     return true
   }
   // Windows absolute paths (e.g. C:\ or D:/)
-  if (/^[A-Za-z]:[\\/]/.test(source)) {
+  if (/^[A-Za-z]:[\\/]/.test(url)) {
     return true
   }
   return false
 }
 export function extractPluginName(source) {
-  if (isLocalSource(source)) {
-    return path.basename(source.replace(/[\/]+$/, ""))
+  if (typeof source === "object" && source !== null && typeof source.name === "string") {
+    return source.name
   }
-  if (source.startsWith("github:")) {
-    const withoutPrefix = source.replace("github:", "")
+  const url = getSourceUrl(source)
+  if (isLocalSource(url)) {
+    return path.basename(url.replace(/[\/]+$/, ""))
+  }
+  if (url.startsWith("github:")) {
+    const withoutPrefix = url.replace("github:", "")
     const [repoPath] = withoutPrefix.split("#")
     const parts = repoPath.split("/")
     return parts[parts.length - 1]
   }
-  if (source.startsWith("git+") || source.startsWith("https://")) {
-    const url = source.replace("git+", "")
-    const match = url.match(/\/([^/]+?)(?:\.git)?(?:#|$)/)
-    return match?.[1] ?? source
+  if (url.startsWith("git+") || url.startsWith("https://")) {
+    const cleaned = url.replace("git+", "")
+    const match = cleaned.match(/\/([^/]+?)(?:\.git)?(?:#|$)/)
+    return match?.[1] ?? url
   }
-  return source
+  return url
 }
 
 export function readManifestFromPackageJson(pluginDir) {
@@ -123,28 +164,33 @@ export function readManifestFromPackageJson(pluginDir) {
 }
 
 export function parseGitSource(source) {
-  if (isLocalSource(source)) {
-    const resolved = path.resolve(source)
-    const name = path.basename(resolved)
-    return { name, url: resolved, ref: undefined, local: true }
+  const url = getSourceUrl(source)
+  const subdir = getSourceSubdir(source)
+  if (isLocalSource(url)) {
+    const resolved = path.resolve(url)
+    const name = typeof source === "object" && source.name ? source.name : path.basename(resolved)
+    return { name, url: resolved, ref: undefined, local: true, subdir }
   }
-  if (source.startsWith("github:")) {
-    const [repoPath, ref] = source.replace("github:", "").split("#")
+  if (url.startsWith("github:")) {
+    const [repoPath, ref] = url.replace("github:", "").split("#")
     const [owner, repo] = repoPath.split("/")
-    return { name: repo, url: `https://github.com/${owner}/${repo}.git`, ref }
+    const name = typeof source === "object" && source.name ? source.name : repo
+    return { name, url: `https://github.com/${owner}/${repo}.git`, ref, subdir }
   }
-  if (source.startsWith("git+")) {
-    const raw = source.replace("git+", "")
-    const [url, ref] = raw.split("#")
-    const name = path.basename(url, ".git")
-    return { name, url, ref }
+  if (url.startsWith("git+")) {
+    const raw = url.replace("git+", "")
+    const [parsed, ref] = raw.split("#")
+    const name =
+      typeof source === "object" && source.name ? source.name : path.basename(parsed, ".git")
+    return { name, url: parsed, ref, subdir }
   }
-  if (source.startsWith("https://")) {
-    const [url, ref] = source.split("#")
-    const name = path.basename(url, ".git")
-    return { name, url, ref }
+  if (url.startsWith("https://")) {
+    const [parsed, ref] = url.split("#")
+    const name =
+      typeof source === "object" && source.name ? source.name : path.basename(parsed, ".git")
+    return { name, url: parsed, ref, subdir }
   }
-  throw new Error(`Cannot parse plugin source: ${source}`)
+  throw new Error(`Cannot parse plugin source: ${formatSource(source)}`)
 }
 
 export function getGitCommit(pluginDir) {
@@ -195,6 +241,8 @@ export function getEnrichedPlugins() {
       name,
       displayName: manifest?.displayName ?? name,
       source: entry.source,
+      sourceDisplay: formatSource(entry.source),
+      subdir: getSourceSubdir(entry.source) ?? locked?.subdir ?? undefined,
       enabled: entry.enabled ?? true,
       options: entry.options ?? {},
       order: entry.order ?? 50,

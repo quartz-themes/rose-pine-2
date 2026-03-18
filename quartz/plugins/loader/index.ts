@@ -20,6 +20,7 @@ import {
   getPluginEntryPoint,
   toFileUrl,
   isLocalSource,
+  validatePluginExternals,
 } from "./gitLoader"
 
 const MINIMUM_QUARTZ_VERSION = "4.5.0"
@@ -185,11 +186,13 @@ async function resolveSinglePlugin(
     try {
       const gitSpec = parsePluginSource(packageName)
       await installPlugin(gitSpec, { verbose: options.verbose })
-      const entryPoint = getPluginEntryPoint(gitSpec.name, gitSpec.subdir)
+      const entryPoint = getPluginEntryPoint(gitSpec.name)
 
       // Import the plugin
       const module = await import(toFileUrl(entryPoint))
       const importedManifest: PluginManifest | null = module.manifest ?? null
+
+      validatePluginExternals(gitSpec.name, entryPoint, { verbose: options.verbose })
 
       manifest = importedManifest ?? {}
 

@@ -246,7 +246,10 @@ plugins:
       position: beforeBody
       priority: 15
       display: all
-  - source: github:saberzero1/quartz-themes
+  - source:
+      name: quartz-themes
+      repo: github:saberzero1/quartz-themes
+      subdir: plugin
     enabled: true
     options:
       theme: default

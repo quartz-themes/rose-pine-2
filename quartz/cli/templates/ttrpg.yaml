@@ -249,7 +249,10 @@ plugins:
   # TTRPG-specific plugins
   - source: github:Requiae/quartz-leaflet-map-plugin
     enabled: true
-  - source: github:saberzero1/quartz-themes
+  - source:
+      name: quartz-themes
+      repo: github:saberzero1/quartz-themes
+      subdir: plugin
     enabled: true
     options:
       theme: its-theme

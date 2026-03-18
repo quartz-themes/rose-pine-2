@@ -6,12 +6,11 @@ import { getPluginSubpathEntry, toFileUrl } from "./gitLoader"
 export async function loadComponentsFromPackage(
   pluginName: string,
   manifest: PluginManifest | null,
-  subdir?: string,
 ): Promise<void> {
   if (!manifest?.components) return
 
   try {
-    const componentsPath = getPluginSubpathEntry(pluginName, "./components", subdir)
+    const componentsPath = getPluginSubpathEntry(pluginName, "./components")
 
     let componentsModule: Record<string, unknown>
     if (componentsPath) {

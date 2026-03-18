@@ -157,6 +157,55 @@ npx quartz plugin prune
 
 Both commands support `--dry-run` to preview changes. See [[cli/plugin|the plugin CLI reference]] for full details.
 
+### Advanced Source Options
+
+The `source` field for a plugin can be either a simple string or an object with additional options. The string form is the most common:
+
+```yaml title="quartz.config.yaml"
+plugins:
+  - source: github:quartz-community/explorer
+    enabled: true
+```
+
+For plugins that live in a subdirectory of a repository (monorepo-style), or when you need to pin to a specific branch or tag, use the object form:
+
+```yaml title="quartz.config.yaml"
+plugins:
+  - source:
+      repo: "https://github.com/user/repo.git"
+      subdir: plugin
+      ref: main
+      name: my-plugin
+    enabled: true
+```
+
+The object form supports the following fields:
+
+| Field    | Required | Description                                                                                               |
+| -------- | :------: | --------------------------------------------------------------------------------------------------------- |
+| `repo`   |    ✅    | Git repository URL (e.g. `https://github.com/user/repo.git`).                                             |
+| `subdir` |    ❌    | Subdirectory within the repository that contains the plugin. Used for monorepo-style plugin repositories. |
+| `ref`    |    ❌    | Git ref (branch or tag) to pin to. Equivalent to the `#ref` suffix on string sources.                     |
+| `name`   |    ❌    | Override the directory name used in `.quartz/plugins/`. Defaults to the repository name.                  |
+
+> [!example] Real-world example
+> The [quartz-themes](https://github.com/saberzero1/quartz-themes) plugin lives in the `plugin/` subdirectory of its repository. To install it:
+>
+> ```yaml title="quartz.config.yaml"
+> plugins:
+>   - source:
+>       name: quartz-themes
+>       repo: "https://github.com/saberzero1/quartz-themes.git"
+>       subdir: plugin
+>     enabled: true
+>     options:
+>       theme: "tokyo-night"
+>       mode: both
+> ```
+
+> [!tip]
+> The string form `github:user/repo#branch` and the object form `{ repo, ref }` are equivalent ways to specify a branch. Use the object form when you also need `subdir` or `name`, or when you prefer a more readable configuration.
+
 ### Usage
 
 You can customize the behaviour of Quartz by adding, removing and reordering plugins in `quartz.config.yaml`. Each plugin entry specifies its source, whether it's enabled, execution order, and any options:
