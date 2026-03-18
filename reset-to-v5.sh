@@ -33,22 +33,40 @@ CREATE_MISSING=false
 SPECIFIC_THEMES=()
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --dry-run)        DRY_RUN=true; shift ;;
-    --jobs)           JOBS="$2"; shift 2 ;;
-    -j)               JOBS="$2"; shift 2 ;;
-    -j*)              JOBS="${1#-j}"; shift ;;
-    --create-missing) CREATE_MISSING=true; shift ;;
-    --help|-h)
-      echo "Usage: $0 [--dry-run] [--jobs N] [theme1 theme2 ...]"
-      echo ""
-      echo "Options:"
-      echo "  --dry-run         Show what would happen without pushing"
-      echo "  --jobs N          Number of parallel workers (default: $DEFAULT_JOBS)"
-      echo "  --create-missing  Create missing repos in ${ORG} if clone fails"
-      echo "  theme1 ...        Reset only specific themes (default: all)"
-      exit 0
-      ;;
-    *)          SPECIFIC_THEMES+=("$1"); shift ;;
+  --dry-run)
+    DRY_RUN=true
+    shift
+    ;;
+  --jobs)
+    JOBS="$2"
+    shift 2
+    ;;
+  -j)
+    JOBS="$2"
+    shift 2
+    ;;
+  -j*)
+    JOBS="${1#-j}"
+    shift
+    ;;
+  --create-missing)
+    CREATE_MISSING=true
+    shift
+    ;;
+  --help | -h)
+    echo "Usage: $0 [--dry-run] [--jobs N] [theme1 theme2 ...]"
+    echo ""
+    echo "Options:"
+    echo "  --dry-run         Show what would happen without pushing"
+    echo "  --jobs N          Number of parallel workers (default: $DEFAULT_JOBS)"
+    echo "  --create-missing  Create missing repos in ${ORG} if clone fails"
+    echo "  theme1 ...        Reset only specific themes (default: all)"
+    exit 0
+    ;;
+  *)
+    SPECIFIC_THEMES+=("$1")
+    shift
+    ;;
   esac
 done
 
@@ -554,7 +572,7 @@ reset_theme() {
     # e.g. "rose-pine" → THEME=rose-pine, VARIATION=null
     local IN="${theme}.null"
     local -a parts
-    IFS='.' read -ra parts <<< "$IN"
+    IFS='.' read -ra parts <<<"$IN"
     local THEME="${parts[0]}"
     local VARIATION="${parts[1]}"
 
@@ -689,12 +707,17 @@ reset_theme() {
       fi
     fi
 
+    # Cleanup Actions caches to prevent stale caches from breaking the CI after the reset
+    if [[ "$DRY_RUN" == "false" ]]; then
+      gh cache delete --repo "${ORG}/${theme}" --all 2>/dev/null || true
+    fi
+
     # Cleanup
     cd "$WORK_DIR"
     rm -rf "$repo_dir"
 
     echo "--- END ${theme} ---"
-  } > "$log_file" 2>&1
+  } >"$log_file" 2>&1
 
   # Print summary line to stdout
   local result
