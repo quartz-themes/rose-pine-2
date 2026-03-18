@@ -62,7 +62,7 @@ jobs:
         with:
           command: |
             npx quartz plugin resolve
-          timeout_minutes: 5
+          timeout_minutes: 15
           max_attempts: 3
 
       - name: Build Quartz Docs
