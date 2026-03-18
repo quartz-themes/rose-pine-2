@@ -22,8 +22,8 @@
     "bases-page": {
       "source": "github:quartz-community/bases-page",
       "resolved": "https://github.com/quartz-community/bases-page.git",
-      "commit": "a097eb252678b75a95adeaefefc16c2e73283f35",
-      "installedAt": "2026-03-18T14:14:25.872Z"
+      "commit": "43a1a65dc5c1c2110f2f688af5b72ecc1af7c742",
+      "installedAt": "2026-03-18T18:31:55.056Z"
     },
     "breadcrumbs": {
       "source": "github:quartz-community/breadcrumbs",
@@ -34,8 +34,8 @@
     "canvas-page": {
       "source": "github:quartz-community/canvas-page",
       "resolved": "https://github.com/quartz-community/canvas-page.git",
-      "commit": "f7f15c471c690ded65e9de3712ecb58edb38bddb",
-      "installedAt": "2026-03-18T14:14:27.482Z"
+      "commit": "81852f569cff60bc0885a234452b22afdaa613d3",
+      "installedAt": "2026-03-18T18:31:56.240Z"
     },
     "citations": {
       "source": "github:quartz-community/citations",
@@ -112,8 +112,8 @@
     "explorer": {
       "source": "github:quartz-community/explorer",
       "resolved": "https://github.com/quartz-community/explorer.git",
-      "commit": "07de53f210f86287f41f0b349271c036bdc0b7c4",
-      "installedAt": "2026-03-18T14:14:35.205Z"
+      "commit": "39e56ff82256bd3393b33de4b6f88f14195bbb5b",
+      "installedAt": "2026-03-18T18:32:04.016Z"
     },
     "favicon": {
       "source": "github:quartz-community/favicon",
@@ -124,8 +124,8 @@
     "folder-page": {
       "source": "github:quartz-community/folder-page",
       "resolved": "https://github.com/quartz-community/folder-page.git",
-      "commit": "964ee8c7d7fe744d488877617cfaa0b1d846f906",
-      "installedAt": "2026-03-18T02:08:39.779Z"
+      "commit": "04c61016412a293e28803d8c9cc0761f28de9906",
+      "installedAt": "2026-03-18T18:32:05.209Z"
     },
     "footer": {
       "source": "github:quartz-community/footer",
@@ -261,8 +261,8 @@
     "tag-page": {
       "source": "github:quartz-community/tag-page",
       "resolved": "https://github.com/quartz-community/tag-page.git",
-      "commit": "7756ff7deba5eadd65dec75b3c71449a9e751dcb",
-      "installedAt": "2026-03-18T02:08:40.454Z"
+      "commit": "9bd824ee484801283f3e81cd9c400eba780505ce",
+      "installedAt": "2026-03-18T18:33:28.439Z"
     }
   }
 }

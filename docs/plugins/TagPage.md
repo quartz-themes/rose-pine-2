@@ -12,6 +12,7 @@ This plugin is a page type plugin that emits dedicated pages for each tag used i
 This plugin accepts the following configuration options:
 
 - `sort`: A function of type `(f1: QuartzPluginData, f2: QuartzPluginData) => number{:ts}` used to sort entries. Defaults to sorting by date and tie-breaking on lexographical order.
+- `prefixTags`: If `true`, generated tag page titles are prefixed with "Tag: " (e.g. "Tag: recipes"). Defaults to `false`.
 
 ## API
 

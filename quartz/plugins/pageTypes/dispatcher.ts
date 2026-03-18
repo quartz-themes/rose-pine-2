@@ -134,7 +134,6 @@ function populateVirtualPageHtmlAst(
     try {
       const htmlString = render(BodyComponent(componentData))
       const htmlAst = fromHtml(htmlString, { fragment: true }) as HtmlRoot
-      ve.tree.children = htmlAst.children
       ve.vfile.data.htmlAst = htmlAst
     } catch {
       // Body rendering failed — leave htmlAst empty so transclusion falls
