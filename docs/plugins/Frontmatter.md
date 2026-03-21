@@ -1,14 +1,15 @@
 ---
-title: "Frontmatter"
+title: Frontmatter
 aliases:
   - note-properties
   - Note Properties
-description: "Parses frontmatter and displays note properties in a collapsible panel."
+description: Parses frontmatter and displays note properties in a collapsible panel.
 tags:
   - plugin/transformer
   - plugin/component
 publish: true
 enableToc: true
+image:
 ---
 
 This plugin parses the frontmatter of the page using the [gray-matter](https://github.com/jonschlinkert/gray-matter) library and optionally displays selected properties in a collapsible panel. See [[authoring content#Syntax]], [[Obsidian compatibility]] and [[OxHugo compatibility]] for more information.

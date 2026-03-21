@@ -95,5 +95,6 @@ declare module "vfile" {
       modified: Date
       published: Date
     }
+    defaultDateType?: "created" | "modified" | "published"
   }
 }

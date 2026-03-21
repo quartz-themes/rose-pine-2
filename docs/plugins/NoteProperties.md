@@ -2,6 +2,7 @@
 title: NoteProperties
 tags:
   - plugin/component
+image:
 ---
 
 The NoteProperties plugin is documented under [[Frontmatter]].

@@ -334,7 +334,6 @@ export function createConfigFromDefault() {
         locale: "en-US",
         baseUrl: "quartz.jzhao.xyz",
         ignorePatterns: ["private", "templates", ".obsidian"],
-        defaultDateType: "created",
         theme: {
           cdnCaching: true,
           typography: {

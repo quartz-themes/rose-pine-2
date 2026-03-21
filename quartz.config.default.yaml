@@ -12,7 +12,6 @@ configuration:
     - private
     - templates
     - .obsidian
-  defaultDateType: modified
   theme:
     fontOrigin: googleFonts
     cdnCaching: true
@@ -45,6 +44,7 @@ plugins:
   - source: github:quartz-community/created-modified-date
     enabled: true
     options:
+      defaultDateType: modified
       priority:
         - frontmatter
         - git
@@ -238,7 +238,7 @@ plugins:
       priority: 100
       display: all
   - source: github:quartz-community/stacked-pages
-    enabled: true
+    enabled: false
     layout:
       position: afterBody
       priority: 50

@@ -3,6 +3,7 @@ title: Encrypted Pages Demo
 password: quartz
 tags:
   - plugin/transformer
+image:
 ---
 
 Congratulations! You've successfully decrypted this page. 🎉

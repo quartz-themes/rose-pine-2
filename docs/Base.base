@@ -122,3 +122,14 @@ views:
       - formula.section
       - formula.last_modified
     limit: 24
+  - type: cards
+    name: Image Cards
+    filters:
+      and:
+        - file.folder == "plugins"
+        - "!image.isEmpty()"
+    order:
+      - file.name
+    image: note.image
+    cardSize: 220
+    imageAspectRatio: 1

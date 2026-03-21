@@ -2,6 +2,7 @@
 title: Favicon
 tags:
   - plugin/emitter
+image:
 ---
 
 This plugin emits a `favicon.ico` into the `public` folder. It creates the favicon from `icon.png` located in the `quartz/static` folder.

@@ -2,6 +2,7 @@
 title: Breadcrumbs
 tags:
   - plugin/component
+image:
 ---
 
 Navigation breadcrumb trail.

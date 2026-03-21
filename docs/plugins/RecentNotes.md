@@ -2,6 +2,7 @@
 title: RecentNotes
 tags:
   - plugin/component
+image:
 ---
 
 Shows recently modified notes.

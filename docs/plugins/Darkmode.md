@@ -2,6 +2,7 @@
 title: Darkmode
 tags:
   - plugin/component
+image: "#0052cc"
 ---
 
 Dark mode toggle.

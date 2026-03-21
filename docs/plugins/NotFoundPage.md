@@ -2,6 +2,7 @@
 title: NotFoundPage
 tags:
   - plugin/pageType
+image:
 ---
 
 This plugin emits a 404 (Not Found) page for broken or non-existent URLs. It uses the `minimal` [[layout#Page Frames|page frame]] (no sidebars, no header or beforeBody chrome — only content and footer) to present a clean error page.

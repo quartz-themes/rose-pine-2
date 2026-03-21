@@ -3,6 +3,7 @@ title: EncryptedPages
 tags:
   - plugin/transformer
   - plugin/filter
+image: "#FF1493"
 ---
 
 Password-protected encrypted pages. Encrypts page content at build time using AES-256-GCM and decrypts client-side with the Web Crypto API. Passwords are set per-page via frontmatter.

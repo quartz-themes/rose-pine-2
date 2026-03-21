@@ -2,6 +2,7 @@
 title: ReaderMode
 tags:
   - plugin/component
+image:
 ---
 
 Distraction-free reading mode.

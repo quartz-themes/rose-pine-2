@@ -2,6 +2,7 @@
 title: Search
 tags:
   - plugin/component
+image: https://images.unsplash.com/photo-1516382799247-87df95d790b7
 ---
 
 Full-text search functionality.

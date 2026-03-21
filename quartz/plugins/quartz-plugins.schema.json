@@ -174,11 +174,6 @@
             "type": "string"
           },
           "description": "Patterns to ignore during processing"
-        },
-        "defaultDateType": {
-          "type": "string",
-          "enum": ["created", "modified", "published"],
-          "description": "Default date type for pages"
         }
       }
     },

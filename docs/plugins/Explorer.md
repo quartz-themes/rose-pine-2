@@ -2,6 +2,7 @@
 title: Explorer
 tags:
   - plugin/component
+image:
 ---
 
 File tree explorer sidebar.

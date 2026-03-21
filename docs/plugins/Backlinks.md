@@ -2,6 +2,7 @@
 title: Backlinks
 tags:
   - plugin/component
+image:
 ---
 
 Shows pages that link to the current page.

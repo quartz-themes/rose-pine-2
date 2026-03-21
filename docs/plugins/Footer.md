@@ -2,6 +2,7 @@
 title: Footer
 tags:
   - plugin/component
+image:
 ---
 
 This plugin renders a footer at the bottom of the page with a "Created with Quartz" message and a set of configurable links.

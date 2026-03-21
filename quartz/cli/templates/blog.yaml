@@ -14,7 +14,6 @@ configuration:
     - private
     - templates
     - .obsidian
-  defaultDateType: modified
   theme:
     fontOrigin: googleFonts
     cdnCaching: true
@@ -47,6 +46,7 @@ plugins:
   - source: github:quartz-community/created-modified-date
     enabled: true
     options:
+      defaultDateType: modified
       priority:
         - frontmatter
         - git

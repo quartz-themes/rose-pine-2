@@ -2,6 +2,7 @@
 title: Graph
 tags:
   - plugin/component
+image:
 ---
 
 Interactive graph visualization.

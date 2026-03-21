@@ -282,7 +282,7 @@ Mapping v4 plugin names to v5 equivalents:
 
 | v4                                  | v5                                          | Type                  |
 | ----------------------------------- | ------------------------------------------- | --------------------- |
-| `Plugin.FrontMatter()`              | `Plugin.FrontMatter()` (unchanged)          | Internal              |
+| `Plugin.FrontMatter()`              | `ExternalPlugin.NoteProperties()`           | Community             |
 | `Plugin.CreatedModifiedDate()`      | `ExternalPlugin.CreatedModifiedDate()`      | Community             |
 | `Plugin.SyntaxHighlighting()`       | `ExternalPlugin.SyntaxHighlighting()`       | Community             |
 | `Plugin.ObsidianFlavoredMarkdown()` | `ExternalPlugin.ObsidianFlavoredMarkdown()` | Community             |
@@ -303,17 +303,17 @@ Mapping v4 plugin names to v5 equivalents:
 
 Component layout mapping:
 
-| v4 Layout                     | v5 Layout                                  |
-| ----------------------------- | ------------------------------------------ |
-| `Component.Explorer()`        | `Plugin.Explorer()`                        |
-| `Component.Graph()`           | `Plugin.Graph()`                           |
-| `Component.Search()`          | `Plugin.Search()`                          |
-| `Component.Backlinks()`       | `Plugin.Backlinks()`                       |
-| `Component.Darkmode()`        | `Plugin.Darkmode()`                        |
-| `Component.Footer()`          | `Plugin.Footer()`                          |
-| `Component.TableOfContents()` | `Plugin.TableOfContents()`                 |
-| `Component.Head()`            | `Component.Head()` (unchanged, internal)   |
-| `Component.Spacer()`          | `Component.Spacer()` (unchanged, internal) |
+| v4 Layout                     | v5 Layout                                |
+| ----------------------------- | ---------------------------------------- |
+| `Component.Explorer()`        | `Plugin.Explorer()`                      |
+| `Component.Graph()`           | `Plugin.Graph()`                         |
+| `Component.Search()`          | `Plugin.Search()`                        |
+| `Component.Backlinks()`       | `Plugin.Backlinks()`                     |
+| `Component.Darkmode()`        | `Plugin.Darkmode()`                      |
+| `Component.Footer()`          | `Plugin.Footer()`                        |
+| `Component.TableOfContents()` | `Plugin.TableOfContents()`               |
+| `Component.Head()`            | `Component.Head()` (unchanged, internal) |
+| `Component.Spacer()`          | `Plugin.Spacer()`                        |
 
 ---
 

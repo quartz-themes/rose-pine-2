@@ -2,6 +2,7 @@
 title: ContentMeta
 tags:
   - plugin/component
+image:
 ---
 
 This plugin displays content metadata below the article title, such as the creation date and estimated reading time.

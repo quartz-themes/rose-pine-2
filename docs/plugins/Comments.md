@@ -2,6 +2,7 @@
 title: Comments
 tags:
   - plugin/component
+image: "[[giscus-results.png]]"
 ---
 
 Comment system (giscus, utterances, etc.).
