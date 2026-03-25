@@ -23,10 +23,10 @@ jobs:
     runs-on: ubuntu-22.04
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0 # Fetch all history for git info
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@v6
         with:
           node-version: 22
       # - name: Cache dependencies
@@ -52,13 +52,13 @@ jobs:
           git config --global url."https://github.com/".insteadOf "git://github.com/"
 
       - name: Install dependencies
-        uses: nick-fields/retry@v3
+        uses: nick-fields/retry@v4
         with:
           command: npm ci
           timeout_minutes: 3
           max_attempts: 3
       - name: Restore plugins from lockfile
-        uses: nick-fields/retry@v3
+        uses: nick-fields/retry@v4
         with:
           command: |
             npx quartz plugin resolve
@@ -66,7 +66,7 @@ jobs:
           max_attempts: 3
 
       - name: Build Quartz Docs
-        uses: nick-fields/retry@v3
+        uses: nick-fields/retry@v4
         with:
           command: npx quartz build -d docs --verbose
           timeout_minutes: 5
@@ -79,7 +79,7 @@ jobs:
             exit 1
           fi
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: public
 
