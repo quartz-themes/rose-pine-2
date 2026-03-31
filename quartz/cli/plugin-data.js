@@ -400,6 +400,76 @@ export function createConfigFromTemplate(templateName) {
   return rest
 }
 
+/**
+ * Resolves a user-facing plugin name (which may be an overridden name from config)
+ * to the corresponding lockfile key (the original name at install time).
+ *
+ * This bridges the naming identity split between config YAML (which supports
+ * source.name overrides) and the lockfile/disk (which are keyed by the original name).
+ *
+ * @param {string} name - The name the user provided (may be overridden or original)
+ * @param {object|null} lockfile - The parsed lockfile
+ * @param {object|null} pluginsJson - The parsed config YAML
+ * @returns {string} The lockfile key that corresponds to this plugin
+ */
+export function resolveLockfileName(name, lockfile, pluginsJson) {
+  // Direct match — no resolution needed
+  if (lockfile?.plugins?.[name]) return name
+
+  // Check if any config entry with this overridden name maps to a different lockfile key
+  if (pluginsJson?.plugins) {
+    const configEntry = pluginsJson.plugins.find(
+      (e) => extractPluginName(e.source) === name || formatSource(e.source) === name,
+    )
+    if (configEntry) {
+      const url = getSourceUrl(configEntry.source)
+      for (const [key, lock] of Object.entries(lockfile?.plugins ?? {})) {
+        if (
+          lock.source === url ||
+          lock.source === formatSource(configEntry.source) ||
+          lock.resolved === url
+        ) {
+          return key
+        }
+      }
+    }
+  }
+
+  return name
+}
+
+/**
+ * Builds a map from lockfile keys to their overridden display names from config.
+ * Returns entries only where the overridden name differs from the lockfile key.
+ *
+ * @param {object|null} lockfile - The parsed lockfile
+ * @param {object|null} pluginsJson - The parsed config YAML
+ * @returns {Map<string, string>} Map of lockfileKey → overriddenName
+ */
+export function getNameOverrides(lockfile, pluginsJson) {
+  const overrides = new Map()
+  if (!lockfile?.plugins || !pluginsJson?.plugins) return overrides
+
+  for (const entry of pluginsJson.plugins) {
+    const configName = extractPluginName(entry.source)
+    const url = getSourceUrl(entry.source)
+
+    for (const [lockKey, lock] of Object.entries(lockfile.plugins)) {
+      if (lockKey === configName) break // no override, names match
+      if (
+        lock.source === url ||
+        lock.source === formatSource(entry.source) ||
+        lock.resolved === url
+      ) {
+        overrides.set(lockKey, configName)
+        break
+      }
+    }
+  }
+
+  return overrides
+}
+
 export const PLUGINS_JSON_PATH = CONFIG_YAML_PATH
 export const DEFAULT_PLUGINS_JSON_PATH = DEFAULT_CONFIG_YAML_PATH
 export { LOCKFILE_PATH, PLUGINS_DIR }

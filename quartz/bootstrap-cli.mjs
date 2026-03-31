@@ -122,9 +122,25 @@ yargs(hideBin(process.argv))
         .command("install", "Install plugins from quartz.lock.json", CommonArgv, async () => {
           await handleGitPluginInstall()
         })
-        .command("add <repos..>", "Add plugins from Git repositories", CommonArgv, async (argv) => {
-          await handlePluginAdd(argv.repos)
-        })
+        .command(
+          "add <repos..>",
+          "Add plugins from Git repositories",
+          {
+            ...CommonArgv,
+            name: {
+              string: true,
+              alias: ["as"],
+              describe: "Override the plugin name (for resolving conflicts with duplicate names)",
+            },
+            subdir: {
+              string: true,
+              describe: "Subdirectory within the repository containing the plugin",
+            },
+          },
+          async (argv) => {
+            await handlePluginAdd(argv.repos, { name: argv.name, subdir: argv.subdir })
+          },
+        )
         .command("remove <names..>", "Remove installed plugins", CommonArgv, async (argv) => {
           await handlePluginRemove(argv.names)
         })

@@ -34,8 +34,8 @@
     "canvas-page": {
       "source": "github:quartz-community/canvas-page",
       "resolved": "https://github.com/quartz-community/canvas-page.git",
-      "commit": "025b498d7e7008d65a7740535b2a2de1aef1dcf3",
-      "installedAt": "2026-03-23T01:15:21.374Z"
+      "commit": "614449a0084cdcc78ba7d6d2f7e26b71b81abd3f",
+      "installedAt": "2026-03-31T10:29:49.541Z"
     },
     "citations": {
       "source": "github:quartz-community/citations",
@@ -124,8 +124,8 @@
     "folder-page": {
       "source": "github:quartz-community/folder-page",
       "resolved": "https://github.com/quartz-community/folder-page.git",
-      "commit": "c7fe67ccb1944e895aba10d8315aa7fba58f2bb5",
-      "installedAt": "2026-03-23T01:15:28.249Z"
+      "commit": "6e740ccef9112512f2a9ba442ca23882710a2cb9",
+      "installedAt": "2026-03-31T10:29:58.960Z"
     },
     "footer": {
       "source": "github:quartz-community/footer",
@@ -166,8 +166,8 @@
     "obsidian-flavored-markdown": {
       "source": "github:quartz-community/obsidian-flavored-markdown",
       "resolved": "https://github.com/quartz-community/obsidian-flavored-markdown.git",
-      "commit": "daa4a4d99a7e00e7304a376efd3fd0d6f3ebf158",
-      "installedAt": "2026-03-23T01:15:31.549Z"
+      "commit": "9c6f17e56f17453b828946ad8ff6d609159be8c9",
+      "installedAt": "2026-03-31T10:30:15.314Z"
     },
     "og-image": {
       "source": "github:quartz-community/og-image",
@@ -194,9 +194,9 @@
         "subdir": "plugin"
       },
       "resolved": "https://github.com/saberzero1/quartz-themes.git",
-      "commit": "8072a15298c01a8d2ad1141c32f2b5e17cc57477",
+      "commit": "b124e385ca4ff482b635573cc4a24b087f35eb3d",
       "subdir": "plugin",
-      "installedAt": "2026-03-23T01:16:39.133Z"
+      "installedAt": "2026-03-31T10:30:47.682Z"
     },
     "reader-mode": {
       "source": "github:quartz-community/reader-mode",
@@ -225,8 +225,8 @@
     "search": {
       "source": "github:quartz-community/search",
       "resolved": "https://github.com/quartz-community/search.git",
-      "commit": "b40d509e850d9f57cd56519f51fea5b0fb085707",
-      "installedAt": "2026-03-23T01:16:41.769Z"
+      "commit": "fa489e37d62ad057297d9cb836c14e8f2e732bb2",
+      "installedAt": "2026-03-31T10:30:50.602Z"
     },
     "spacer": {
       "source": "github:quartz-community/spacer",
