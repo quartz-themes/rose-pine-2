@@ -8,7 +8,7 @@ import {
   handleRestore,
   handleSync,
 } from "./cli/handlers.js"
-import { handleMigrate } from "./cli/migrate-handler.js"
+
 import {
   handlePluginInstallUnified,
   handlePluginAdd,
@@ -92,9 +92,6 @@ yargs(hideBin(process.argv))
   })
   .command("build", "Build Quartz into a bundle of static HTML files", BuildArgv, async (argv) => {
     await handleBuild(argv)
-  })
-  .command("migrate", "Migrate old config to quartz.config.yaml", CommonArgv, async () => {
-    await handleMigrate()
   })
   .command("tui", "Launch interactive plugin manager", CommonArgv, async () => {
     await launchTui()

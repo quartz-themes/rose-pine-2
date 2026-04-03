@@ -26,7 +26,7 @@ To update your installed plugins separately, use:
 npx quartz plugin install --latest
 ```
 
-See the [[cli/update|CLI reference for update]] and [[cli/upgrade|CLI reference for upgrade]] for more details on available flags.
+See the [[cli/upgrade|CLI reference for upgrade]] for more details on available flags.
 
 ### Cleaning Up Unused Plugins
 

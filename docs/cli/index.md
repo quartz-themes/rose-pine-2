@@ -24,7 +24,6 @@ You can run the CLI using `npx quartz`.
 - [[cli/sync|sync]]: Push and pull changes between your local machine and GitHub.
 - [[cli/upgrade|upgrade]]: Upgrade the Quartz framework to the latest version. Also available as `npx quartz update`.
 - [[cli/restore|restore]]: Recover your content folder from the local cache.
-- [[cli/migrate|migrate]]: Convert older configuration files to the new YAML format.
 - [[cli/plugin|plugin]]: Install, add, remove, prune, and configure plugins. Use `plugin install` with flags for lockfile/config sync, updates, and checks.
 - [[cli/tui|tui]]: Use a terminal interface to manage plugins and layout.
 
