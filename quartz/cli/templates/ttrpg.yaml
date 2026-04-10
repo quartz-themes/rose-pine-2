@@ -247,8 +247,10 @@ plugins:
       priority: 15
       display: all
   # TTRPG-specific plugins
-  - source: github:Requiae/quartz-leaflet-map-plugin
+  - source: github:Requiae/quartz-leaflet-bases-plugin
     enabled: true
+    options:
+      enableCopyTool: false
   - source:
       name: quartz-themes
       repo: github:saberzero1/quartz-themes
