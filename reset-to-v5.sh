@@ -332,6 +332,7 @@ declare -a ALL_THEMES=(
   "notation-2"
   "notswift"
   "novadust"
+  "obsidian"
   "obsidian-gruvbox"
   "obsidian-nord"
   "obsidianite"
