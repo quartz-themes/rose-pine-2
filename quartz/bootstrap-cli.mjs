@@ -135,6 +135,7 @@ yargs(hideBin(process.argv))
                 latest: argv.latest,
                 clean: argv.clean,
                 dryRun: argv.dryRun,
+                concurrency: argv.concurrency,
               })
             },
           )
@@ -157,6 +158,7 @@ yargs(hideBin(process.argv))
               await handlePluginAdd(argv.repos, {
                 name: argv.name,
                 subdir: argv.subdir,
+                concurrency: argv.concurrency,
               })
             },
           )
@@ -212,11 +214,11 @@ yargs(hideBin(process.argv))
             },
           )
           // Hidden deprecated aliases
-          .command("restore", false, CommonArgv, async () => {
+          .command("restore", false, CommonArgv, async (argv) => {
             console.log(
               "\x1b[33m⚠ 'plugin restore' is deprecated. Use 'plugin install --clean' instead.\x1b[0m",
             )
-            await handlePluginInstallUnified({ clean: true })
+            await handlePluginInstallUnified({ clean: true, concurrency: argv.concurrency })
           })
           .command("update [names..]", false, CommonArgv, async (argv) => {
             console.log(
@@ -225,13 +227,18 @@ yargs(hideBin(process.argv))
             await handlePluginInstallUnified({
               names: argv.names?.length ? argv.names : undefined,
               latest: true,
+              concurrency: argv.concurrency,
             })
           })
-          .command("check", false, CommonArgv, async () => {
+          .command("check", false, CommonArgv, async (argv) => {
             console.log(
               "\x1b[33m⚠ 'plugin check' is deprecated. Use 'plugin install --latest --dry-run' instead.\x1b[0m",
             )
-            await handlePluginInstallUnified({ latest: true, dryRun: true })
+            await handlePluginInstallUnified({
+              latest: true,
+              dryRun: true,
+              concurrency: argv.concurrency,
+            })
           })
           .command(
             "resolve",
@@ -251,6 +258,7 @@ yargs(hideBin(process.argv))
               await handlePluginInstallUnified({
                 fromConfig: true,
                 dryRun: argv.dryRun,
+                concurrency: argv.concurrency,
               })
             },
           )

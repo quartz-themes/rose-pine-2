@@ -257,11 +257,14 @@ export async function handlePluginInstallUnified({
   latest = false,
   clean = false,
   dryRun = false,
+  concurrency: concurrencyOption,
 } = {}) {
   if (clean && latest) {
     console.log(styleText("red", "✗ --clean and --latest cannot be used together"))
     return
   }
+
+  const resolvedConcurrency = Math.max(1, concurrencyOption ?? os.cpus().length)
 
   const pluginsJson = readPluginsJson()
   let lockfile = readLockfile()
@@ -539,7 +542,7 @@ export async function handlePluginInstallUnified({
 
     // Clone remote plugins in parallel
     if (remoteEntries.length > 0) {
-      const concurrency = Math.max(1, os.cpus().length)
+      const concurrency = resolvedConcurrency
       await runParallel(
         remoteEntries,
         concurrency,
@@ -595,7 +598,7 @@ export async function handlePluginInstallUnified({
     if (installed.length > 0) {
       console.log()
       console.log(styleText("cyan", "→ Building plugins..."))
-      const concurrency = Math.max(1, os.cpus().length)
+      const concurrency = resolvedConcurrency
       const results = await runParallel(installed, concurrency, async ({ name, pluginDir }) => {
         const ok = await buildPluginAsync(pluginDir, name)
         if (ok) console.log(styleText("green", `  ✓ ${name} built`))
@@ -722,7 +725,7 @@ export async function handlePluginInstallUnified({
 
     // Clone remote plugins in parallel
     if (remotePlugins.length > 0) {
-      const concurrency = Math.max(1, os.cpus().length)
+      const concurrency = resolvedConcurrency
       await runParallel(remotePlugins, concurrency, async ({ name, entry, pluginDir }) => {
         try {
           if (entry.subdir) {
@@ -763,7 +766,7 @@ export async function handlePluginInstallUnified({
     if (restoredPlugins.length > 0) {
       console.log()
       console.log(styleText("cyan", "→ Building restored plugins..."))
-      const concurrency = Math.max(1, os.cpus().length)
+      const concurrency = resolvedConcurrency
       const results = await runParallel(
         restoredPlugins,
         concurrency,
@@ -824,7 +827,7 @@ export async function handlePluginInstallUnified({
 
     // Phase 2: Fetch/update plugins in parallel
     if (validPlugins.length > 0) {
-      const concurrency = Math.max(1, os.cpus().length)
+      const concurrency = resolvedConcurrency
       await runParallel(validPlugins, concurrency, async ({ name, pluginDir, entry }) => {
         try {
           console.log(styleText("cyan", `→ Updating ${name}...`))
@@ -884,7 +887,7 @@ export async function handlePluginInstallUnified({
     if (updatedPlugins.length > 0) {
       console.log()
       console.log(styleText("cyan", "→ Rebuilding updated plugins..."))
-      const concurrency = Math.max(1, os.cpus().length)
+      const concurrency = resolvedConcurrency
       await runParallel(updatedPlugins, concurrency, async ({ name, pluginDir }) => {
         const ok = await buildPluginAsync(pluginDir, name)
         if (ok) console.log(styleText("green", `  ✓ ${name} rebuilt`))
@@ -986,7 +989,7 @@ export async function handlePluginInstallUnified({
 
   // Run git fetch/clone operations in parallel
   if (gitEntries.length > 0) {
-    const concurrency = Math.max(1, os.cpus().length)
+    const concurrency = resolvedConcurrency
     await runParallel(gitEntries, concurrency, async ({ name, entry, pluginDir, action }) => {
       try {
         if (action === "update") {
@@ -1031,7 +1034,7 @@ export async function handlePluginInstallUnified({
   if (pluginsToBuild.length > 0) {
     console.log()
     console.log(styleText("cyan", "→ Building plugins..."))
-    const concurrency = Math.max(1, os.cpus().length)
+    const concurrency = resolvedConcurrency
     const results = await runParallel(pluginsToBuild, concurrency, async ({ name, pluginDir }) => {
       const ok = await buildPluginAsync(pluginDir, name)
       if (ok) console.log(styleText("green", `  ✓ ${name} built`))
@@ -1061,7 +1064,7 @@ export async function handlePluginInstall() {
 
 export async function handlePluginAdd(
   sources,
-  { name: nameOverride, subdir: subdirOverride } = {},
+  { name: nameOverride, subdir: subdirOverride, concurrency: concurrencyOption } = {},
 ) {
   if (nameOverride && sources.length > 1) {
     console.log(styleText("red", "✗ --name/--as can only be used when adding a single plugin"))
@@ -1071,6 +1074,8 @@ export async function handlePluginAdd(
     console.log(styleText("red", "✗ --subdir can only be used when adding a single plugin"))
     return
   }
+
+  const resolvedConcurrency = Math.max(1, concurrencyOption ?? os.cpus().length)
 
   let lockfile = readLockfile()
   if (!lockfile) {
@@ -1136,7 +1141,7 @@ export async function handlePluginAdd(
 
   // Clone remote plugins in parallel
   if (remoteSources.length > 0) {
-    const concurrency = Math.max(1, os.cpus().length)
+    const concurrency = resolvedConcurrency
     await runParallel(
       remoteSources,
       concurrency,
@@ -1187,7 +1192,7 @@ export async function handlePluginAdd(
   if (addedPlugins.length > 0) {
     console.log()
     console.log(styleText("cyan", "→ Building plugins..."))
-    const concurrency = Math.max(1, os.cpus().length)
+    const concurrency = resolvedConcurrency
     await runParallel(addedPlugins, concurrency, async ({ name, pluginDir }) => {
       const ok = await buildPluginAsync(pluginDir, name)
       if (ok) console.log(styleText("green", `  ✓ ${name} built`))

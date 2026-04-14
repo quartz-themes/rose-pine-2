@@ -26,6 +26,8 @@ Try increasing concurrency:
 
 ```bash
 npx quartz build --concurrency 8
+# or the shorthand:
+npx quartz build -c 8
 ```
 
 The default uses all available CPU cores. If you're on a memory-constrained environment (CI), reducing concurrency may actually help.
@@ -59,6 +61,28 @@ This means the plugin is referenced in `quartz.ts` but not installed. Either:
 
 - Install it: `npx quartz plugin add github:quartz-community/plugin-name`
 - Or remove the reference from `quartz.ts`
+
+### `plugin install` hangs, OOMs, or fails on low-end hardware
+
+By default, `npx quartz plugin install` clones, fetches, and builds plugins in parallel across all your CPU cores. Each parallel worker may run its own `npm install` and `npm run build`, which is memory-intensive. On low-end laptops, Raspberry Pi, small VPS instances, or restrictive CI runners this can exhaust RAM, trigger the OOM killer, or make the system appear to hang.
+
+Lower the parallelism with `--concurrency` / `-c`:
+
+```bash
+# Install one plugin at a time (safest, slowest)
+npx quartz plugin install --latest -c 1
+
+# Two at a time — usually works on 4 GB machines
+npx quartz plugin install --latest --concurrency 2
+```
+
+The same flag works for `plugin add` and the deprecated aliases (`plugin update`, `plugin restore`, `plugin check`, `plugin resolve`):
+
+```bash
+npx quartz plugin add github:quartz-community/some-plugin -c 1
+```
+
+If `plugin install` consistently fails near the same plugin with `-c 1`, the issue is likely with that specific plugin's build, not with concurrency — try running `--verbose` to get detailed error output, and check the plugin's own repository for known issues.
 
 ## Content Issues
 
