@@ -5,9 +5,9 @@ aliases:
   - "migrating from Quartz 4"
 ---
 
-This guide covers migrating to Quartz 5 from previous versions. If you're already on Quartz 5 and want to update to the latest version, see [[getting-started/upgrading|Upgrading Quartz]] instead.
+This guide covers migrating to Quartz 5 from previous versions. If you're already on Quartz 5 and want to update to the latest version, see [[upgrading|Upgrading Quartz]] instead.
 
-If you're new to Quartz entirely, skip this guide and follow the [[getting-started/installation|Installation guide]] instead.
+If you're new to Quartz entirely, skip this guide and follow the [[installation|Installation guide]] instead.
 
 ## Before You Start: Save Your Content
 

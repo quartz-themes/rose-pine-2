@@ -35,9 +35,9 @@ Quartz plugins fall into several categories:
 | [[CrawlLinks]]                   | [`quartz-community/crawl-links`](https://github.com/quartz-community/crawl-links)                               |   ✅    |    ⚠️    | Parses and resolves links. Removing it is not recommended.                                   |
 | [[Description]]                  | [`quartz-community/description`](https://github.com/quartz-community/description)                               |   ✅    |    ❌    | Generates page descriptions for metadata.                                                    |
 | [[UnlistedPages]]                | [`quartz-community/unlisted-pages`](https://github.com/quartz-community/unlisted-pages)                         |   ✅    |    ❌    | Bridges `frontmatter.unlisted` to `file.data.unlisted` so any page can opt out of discovery. |
-| [[Latex]]                        | [`quartz-community/latex`](https://github.com/quartz-community/latex)                                           |   ✅    |    ❌    | Renders LaTeX math expressions.                                                              |
+| [[plugins/Latex\|Latex]]         | [`quartz-community/latex`](https://github.com/quartz-community/latex)                                           |   ✅    |    ❌    | Renders LaTeX math expressions.                                                              |
 | [[EncryptedPages]]               | [`quartz-community/encrypted-pages`](https://github.com/quartz-community/encrypted-pages)                       |   ✅    |    ❌    | Password-protected encrypted pages with shadow content index.²                               |
-| [[Citations]]                    | [`quartz-community/citations`](https://github.com/quartz-community/citations)                                   |   ❌    |    ❌    | Academic citation support via BibTeX.                                                        |
+| [[plugins/Citations\|Citations]] | [`quartz-community/citations`](https://github.com/quartz-community/citations)                                   |   ❌    |    ❌    | Academic citation support via BibTeX.                                                        |
 | [[HardLineBreaks]]               | [`quartz-community/hard-line-breaks`](https://github.com/quartz-community/hard-line-breaks)                     |   ❌    |    ❌    | Treats single newlines as hard line breaks.                                                  |
 | [[OxHugoFlavoredMarkdown]]       | [`quartz-community/ox-hugo`](https://github.com/quartz-community/ox-hugo)                                       |   ❌    |    ❌    | ox-hugo Markdown compatibility.                                                              |
 | [[RoamFlavoredMarkdown]]         | [`quartz-community/roam`](https://github.com/quartz-community/roam)                                             |   ❌    |    ❌    | Roam Research Markdown compatibility.                                                        |
@@ -72,26 +72,26 @@ Quartz plugins fall into several categories:
 
 ### Components
 
-| Plugin                         | Repository                                                                                    | Enabled | Required | Description                                      |
-| ------------------------------ | --------------------------------------------------------------------------------------------- | :-----: | :------: | ------------------------------------------------ |
-| [[ArticleTitle]]               | [`quartz-community/article-title`](https://github.com/quartz-community/article-title)         |   ✅    |    ❌    | Renders the article title as an h1 heading.      |
-| [[ContentMeta]]                | [`quartz-community/content-meta`](https://github.com/quartz-community/content-meta)           |   ✅    |    ❌    | Displays creation date and reading time.         |
-| [[TagList]]                    | [`quartz-community/tag-list`](https://github.com/quartz-community/tag-list)                   |   ❌    |    ❌    | Renders tags as clickable links.                 |
-| [[PageTitle]]                  | [`quartz-community/page-title`](https://github.com/quartz-community/page-title)               |   ✅    |    ❌    | Renders the site title as a home link.           |
-| [[darkmode\|Darkmode]]         | [`quartz-community/darkmode`](https://github.com/quartz-community/darkmode)                   |   ✅    |    ❌    | Toggle between light and dark themes.            |
-| [[reader mode\|Reader Mode]]   | [`quartz-community/reader-mode`](https://github.com/quartz-community/reader-mode)             |   ✅    |    ❌    | Distraction-free reading mode toggle.            |
-| [[explorer\|Explorer]]         | [`quartz-community/explorer`](https://github.com/quartz-community/explorer)                   |   ✅    |    ❌    | File tree explorer sidebar.                      |
-| [[graph view\|Graph View]]     | [`quartz-community/graph`](https://github.com/quartz-community/graph)                         |   ✅    |    ❌    | Interactive link graph visualization.            |
-| [[full-text search\|Search]]   | [`quartz-community/search`](https://github.com/quartz-community/search)                       |   ✅    |    ❌    | Full-text search functionality.                  |
-| [[backlinks\|Backlinks]]       | [`quartz-community/backlinks`](https://github.com/quartz-community/backlinks)                 |   ✅    |    ❌    | Shows pages that link to the current page.       |
-| [[breadcrumbs\|Breadcrumbs]]   | [`quartz-community/breadcrumbs`](https://github.com/quartz-community/breadcrumbs)             |   ✅    |    ❌    | Breadcrumb navigation trail.                     |
-| [[comments\|Comments]]         | [`quartz-community/comments`](https://github.com/quartz-community/comments)                   |   ❌    |    ❌    | Comment system integration (Giscus, etc.).       |
-| [[Footer]]                     | [`quartz-community/footer`](https://github.com/quartz-community/footer)                       |   ✅    |    ❌    | Page footer with configurable links.             |
-| [[recent notes\|Recent Notes]] | [`quartz-community/recent-notes`](https://github.com/quartz-community/recent-notes)           |   ❌    |    ❌    | Displays a list of recently modified notes.      |
-| [[Spacer]]                     | [`quartz-community/spacer`](https://github.com/quartz-community/spacer)                       |   ✅    |    ❌    | Flexible spacer for layout groups.               |
-| [[TableOfContents]]¹           | [`quartz-community/table-of-contents`](https://github.com/quartz-community/table-of-contents) |   ✅    |    ❌    | Renders the table of contents in the layout.     |
-| [[EncryptedPages]]²            | [`quartz-community/encrypted-pages`](https://github.com/quartz-community/encrypted-pages)     |   ✅    |    ❌    | Renders the password prompt for encrypted pages. |
-| [[StackedPages]]               | [`quartz-community/stacked-pages`](https://github.com/quartz-community/stacked-pages)         |   ✅    |    ❌    | Andy Matuschak-style stacked sliding panes.      |
+| Plugin                               | Repository                                                                                    | Enabled | Required | Description                                      |
+| ------------------------------------ | --------------------------------------------------------------------------------------------- | :-----: | :------: | ------------------------------------------------ |
+| [[ArticleTitle]]                     | [`quartz-community/article-title`](https://github.com/quartz-community/article-title)         |   ✅    |    ❌    | Renders the article title as an h1 heading.      |
+| [[ContentMeta]]                      | [`quartz-community/content-meta`](https://github.com/quartz-community/content-meta)           |   ✅    |    ❌    | Displays creation date and reading time.         |
+| [[TagList]]                          | [`quartz-community/tag-list`](https://github.com/quartz-community/tag-list)                   |   ❌    |    ❌    | Renders tags as clickable links.                 |
+| [[PageTitle]]                        | [`quartz-community/page-title`](https://github.com/quartz-community/page-title)               |   ✅    |    ❌    | Renders the site title as a home link.           |
+| [[plugins/Darkmode\|Darkmode]]       | [`quartz-community/darkmode`](https://github.com/quartz-community/darkmode)                   |   ✅    |    ❌    | Toggle between light and dark themes.            |
+| [[reader mode\|Reader Mode]]         | [`quartz-community/reader-mode`](https://github.com/quartz-community/reader-mode)             |   ✅    |    ❌    | Distraction-free reading mode toggle.            |
+| [[plugins/Explorer\|Explorer]]       | [`quartz-community/explorer`](https://github.com/quartz-community/explorer)                   |   ✅    |    ❌    | File tree explorer sidebar.                      |
+| [[graph view\|Graph View]]           | [`quartz-community/graph`](https://github.com/quartz-community/graph)                         |   ✅    |    ❌    | Interactive link graph visualization.            |
+| [[full-text search\|Search]]         | [`quartz-community/search`](https://github.com/quartz-community/search)                       |   ✅    |    ❌    | Full-text search functionality.                  |
+| [[plugins/Backlinks\|Backlinks]]     | [`quartz-community/backlinks`](https://github.com/quartz-community/backlinks)                 |   ✅    |    ❌    | Shows pages that link to the current page.       |
+| [[plugins/Breadcrumbs\|Breadcrumbs]] | [`quartz-community/breadcrumbs`](https://github.com/quartz-community/breadcrumbs)             |   ✅    |    ❌    | Breadcrumb navigation trail.                     |
+| [[plugins/Comments\|Comments]]       | [`quartz-community/comments`](https://github.com/quartz-community/comments)                   |   ❌    |    ❌    | Comment system integration (Giscus, etc.).       |
+| [[Footer]]                           | [`quartz-community/footer`](https://github.com/quartz-community/footer)                       |   ✅    |    ❌    | Page footer with configurable links.             |
+| [[RecentNotes\|Recent Notes]]        | [`quartz-community/recent-notes`](https://github.com/quartz-community/recent-notes)           |   ❌    |    ❌    | Displays a list of recently modified notes.      |
+| [[Spacer]]                           | [`quartz-community/spacer`](https://github.com/quartz-community/spacer)                       |   ✅    |    ❌    | Flexible spacer for layout groups.               |
+| [[TableOfContents]]¹                 | [`quartz-community/table-of-contents`](https://github.com/quartz-community/table-of-contents) |   ✅    |    ❌    | Renders the table of contents in the layout.     |
+| [[EncryptedPages]]²                  | [`quartz-community/encrypted-pages`](https://github.com/quartz-community/encrypted-pages)     |   ✅    |    ❌    | Renders the password prompt for encrypted pages. |
+| [[StackedPages]]                     | [`quartz-community/stacked-pages`](https://github.com/quartz-community/stacked-pages)         |   ✅    |    ❌    | Andy Matuschak-style stacked sliding panes.      |
 
 > ¹ TableOfContents is a dual-category plugin (transformer + component). It appears in both the Transformers and Components tables.
 >

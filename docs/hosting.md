@@ -36,7 +36,7 @@ To add a custom domain, check out [Cloudflare's documentation](https://developer
 > Cloudflare Pages performs a shallow clone by default, so if you rely on `git` for timestamps, it is recommended that you add `git fetch --unshallow &&` to the beginning of the build command (e.g., `git fetch --unshallow && npx quartz plugin install && npx quartz build`).
 
 > [!note]
-> For more detailed CI/CD configuration including caching and plugin management, see [[getting-started/migrating#Updating Your CI/CD|the migration guide]].
+> For more detailed CI/CD configuration including caching and plugin management, see [[migrating#Updating Your CI/CD|the migration guide]].
 
 ## GitHub Pages
 

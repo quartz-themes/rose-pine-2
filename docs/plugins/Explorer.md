@@ -10,7 +10,7 @@ File tree explorer sidebar.
 > [!note]
 > For information on how to add, remove or configure plugins, see the [[configuration#Plugins|Configuration]] page.
 
-See [[explorer]] for detailed usage information.
+See [[plugins/Explorer]] for detailed usage information.
 
 ## Configuration
 

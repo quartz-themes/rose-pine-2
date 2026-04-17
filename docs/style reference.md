@@ -482,7 +482,7 @@ class Biology,Chemistry internal-link;
 
 ![[index]]
 
-![[index#Getting Started]]
+![[philosophy#A garden should be your own]]
 
 ---
 

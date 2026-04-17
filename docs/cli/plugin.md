@@ -270,4 +270,4 @@ Running the plugin command without any subcommand shows a status dashboard of al
 npx quartz plugin
 ```
 
-This displays each plugin with its source, commit, enabled/disabled status, and checks for available updates in parallel. For the full interactive management interface, use [[cli/tui|npx quartz tui]] instead.
+This displays each plugin with its source, commit, enabled/disabled status, and checks for available updates in parallel. For the full interactive management interface, use [[tui|npx quartz tui]] instead.

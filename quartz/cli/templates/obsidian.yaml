@@ -86,6 +86,7 @@ plugins:
     enabled: true
     options:
       markdownLinkResolution: shortest
+      # disableBrokenWikilinks: false  # Set true to add a "broken" CSS class to internal links whose target is not in ctx.allSlugs.
     order: 60
   - source: github:quartz-community/description
     enabled: true
