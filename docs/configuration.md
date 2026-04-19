@@ -236,7 +236,20 @@ plugins:
 ```
 
 > [!note]
-> For advanced options that require JavaScript (e.g. callback functions), use the TS override in `quartz.ts`. See the plugin-specific documentation for details.
+> Some plugin options require JavaScript callback functions (e.g. custom sort, filter, or map functions) that can't be expressed in YAML. For these, use the TS override in `quartz.ts`:
+>
+> ```ts title="quartz.ts"
+> import * as ExternalPlugin from "./.quartz/plugins"
+>
+> ExternalPlugin.Explorer({
+>   mapFn: (node) => {
+>     node.displayName = node.displayName.toUpperCase()
+>     return node
+>   },
+> })
+> ```
+>
+> Options set in `quartz.ts` are merged with YAML options and take precedence. See the plugin-specific documentation for available callback options.
 
 You can see a list of all plugins and their configuration options [[tags/plugin|here]].
 

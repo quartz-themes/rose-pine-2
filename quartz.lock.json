@@ -112,8 +112,8 @@
     "explorer": {
       "source": "github:quartz-community/explorer",
       "resolved": "https://github.com/quartz-community/explorer.git",
-      "commit": "583373b43caf7f09911b10dcf1303800e37d8318",
-      "installedAt": "2026-04-17T01:28:44.471Z"
+      "commit": "377297006e725a2f3f173cf5822b61424a6fefdd",
+      "installedAt": "2026-04-19T16:01:18.164Z"
     },
     "favicon": {
       "source": "github:quartz-community/favicon",
@@ -194,9 +194,9 @@
         "subdir": "plugin"
       },
       "resolved": "https://github.com/saberzero1/quartz-themes.git",
-      "commit": "0f625c753b1eecfe75e8a7cbf6690b651767cc02",
+      "commit": "be1b19db0971e835d46ddf176287d071733667df",
       "subdir": "plugin",
-      "installedAt": "2026-04-15T08:49:02.877Z"
+      "installedAt": "2026-04-19T16:01:55.027Z"
     },
     "reader-mode": {
       "source": "github:quartz-community/reader-mode",
