@@ -519,7 +519,53 @@ Each view registration includes:
 
 The `ViewRegistry` is a global singleton (via `Symbol.for`) ensuring all copies of the module share the same registry.
 
-## Building and Testing
+## Building and Distribution
+
+Quartz v5 plugins ship pre-built `dist/` in their repositories. When a user installs your plugin, Quartz detects the pre-built output and skips the install/build cycle entirely — making installation near-instant.
+
+### Build Configuration
+
+The plugin template's `tsup.config.ts` bundles all dependencies by default. Only **singleton externals** — packages that must be the same instance across all plugins — are left unbundled:
+
+```ts
+const SINGLETON_EXTERNALS = [
+  "preact",
+  "preact/hooks",
+  "preact/jsx-runtime",
+  "preact/compat",
+  "@jackyzha0/quartz",
+  "@jackyzha0/quartz/*",
+  "vfile",
+  "vfile/*",
+  "unified",
+]
+
+export default defineConfig({
+  // ...
+  noExternal: [/.*/], // Bundle everything
+  external: SINGLETON_EXTERNALS, // Except singletons
+})
+```
+
+This means your plugin's `dist/index.js` is self-contained — no `npm install` needed at install time.
+
+### Shipping Pre-built Output
+
+Your plugin's `dist/` directory should be committed to the repository:
+
+1. **Do NOT add `dist/` to `.gitignore`**
+2. Run `npm run build` before committing
+3. The CI workflow verifies `dist/` is up to date on every push
+
+If `dist/` is missing or gitignored, Quartz falls back to the full install/build cycle (useful during local development with symlinked plugins).
+
+### Plugins with Native Dependencies
+
+Plugins that require native packages (e.g. `sharp` for image processing) cannot bundle those. For these plugins:
+
+1. Set `"requiresInstall": true` in your `package.json` quartz manifest
+2. Declare the native package as a `peerDependency`
+3. Quartz will install it into the host project at build time
 
 ```shell
 # Build the plugin
@@ -637,7 +683,7 @@ Use [BCP 47](https://en.wikipedia.org/wiki/IETF_language_tag) locale codes (e.g.
 npx quartz plugin add github:your-username/my-plugin
 ```
 
-This clones the plugin, builds it, and adds it to both `quartz.config.yaml` and `quartz.lock.json`. You can then configure it in your config:
+This clones the plugin and adds it to both `quartz.config.yaml` and `quartz.lock.json`. If the plugin ships pre-built `dist/` (recommended), installation completes in seconds with no build step. You can then configure it in your config:
 
 ```yaml title="quartz.config.yaml"
 plugins:

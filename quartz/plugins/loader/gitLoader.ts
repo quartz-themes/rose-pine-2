@@ -161,9 +161,9 @@ function collectNativeDeps(pluginDir: string): Map<string, string> {
     if (!manifest.requiresInstall) return result
 
     const peerDeps: Record<string, string> = pkg.peerDependencies ?? {}
+    const sharedExternals = getSharedExternals()
     for (const [name, range] of Object.entries(peerDeps)) {
-      // Skip shared externals that Quartz already provides
-      if (SHARED_EXTERNALS.some((prefix) => name.startsWith(prefix)) || name === "vfile") {
+      if (sharedExternals.some((prefix) => name.startsWith(prefix))) {
         continue
       }
       result.set(name, range)
@@ -269,6 +269,11 @@ function isDistGitignored(pluginDir: string): boolean {
   })
 }
 
+function hasPrebuiltDist(pluginDir: string): boolean {
+  const distDir = path.join(pluginDir, "dist")
+  return fs.existsSync(distDir) && !isDistGitignored(pluginDir)
+}
+
 function needsBuild(pluginDir: string): boolean {
   if (isDistGitignored(pluginDir)) return true
   const distDir = path.join(pluginDir, "dist")
@@ -301,6 +306,15 @@ function findPluginByPackageName(packageName: string): string | null {
  * share a single copy of packages like unified, vfile, preact, etc.
  * @quartz-community/* peers resolve to co-installed sibling plugins instead.
  */
+function trySymlink(target: string, linkPath: string): void {
+  try {
+    fs.symlinkSync(target, linkPath, "dir")
+  } catch (err: unknown) {
+    if ((err as NodeJS.ErrnoException).code === "EEXIST") return
+    throw err
+  }
+}
+
 function linkPeerDependencies(pluginDir: string): void {
   const pkgPath = path.join(pluginDir, "package.json")
   if (!fs.existsSync(pkgPath)) return
@@ -323,7 +337,7 @@ function linkPeerDependencies(pluginDir: string): void {
       fs.mkdirSync(scopeDir, { recursive: true })
 
       const target = path.relative(scopeDir, siblingPlugin)
-      fs.symlinkSync(target, peerNodeModulesPath, "dir")
+      trySymlink(target, peerNodeModulesPath)
       continue
     }
 
@@ -339,11 +353,19 @@ function linkPeerDependencies(pluginDir: string): void {
     }
 
     const target = path.relative(path.dirname(peerNodeModulesPath), hostPeerPath)
-    fs.symlinkSync(target, peerNodeModulesPath, "dir")
+    trySymlink(target, peerNodeModulesPath)
   }
 }
 
 function buildInstalledPlugin(pluginDir: string, name: string, verbose?: boolean): void {
+  if (hasPrebuiltDist(pluginDir)) {
+    if (verbose) {
+      console.log(styleText("green", `✓`), `${name}: using pre-built dist/`)
+    }
+    linkPeerDependencies(pluginDir)
+    return
+  }
+
   try {
     const shouldBuild = needsBuild(pluginDir)
 
@@ -759,15 +781,71 @@ const NODE_BUILTINS = new Set([
   "zlib",
 ])
 
-const SHARED_EXTERNALS = ["@quartz-community/", "preact", "@jackyzha0/quartz", "vfile"]
+/**
+ * Packages that must be the same JavaScript module instance at runtime across
+ * all plugins and the host. These are true singletons — duplicating them causes
+ * broken identity checks (e.g. `instanceof`, shared registries).
+ *
+ * This list should be kept small and explicit. Only add packages here when
+ * multiple copies at runtime would cause correctness issues.
+ */
+const SINGLETON_EXTERNALS = ["preact", "@jackyzha0/quartz", "vfile", "unified"]
 
+/**
+ * Scope prefixes whose packages are always treated as shared externals.
+ * Plugins under these scopes are co-installed siblings, not bundled deps.
+ */
+const SHARED_SCOPES = ["@quartz-community/"]
+
+/**
+ * Build the full shared externals list by combining:
+ *  1. Explicit singleton packages (must be same instance at runtime)
+ *  2. Shared scope prefixes (@quartz-community/*)
+ *  3. Auto-detected dependencies from Quartz's own package.json
+ *
+ * The auto-detection ensures that when Quartz adds a new dependency,
+ * plugins that import it won't get false "unbundled external" warnings.
+ */
+let _sharedExternalsCache: string[] | null = null
+
+export function getSharedExternals(): string[] {
+  if (_sharedExternalsCache) return _sharedExternalsCache
+
+  const externals = [...SINGLETON_EXTERNALS, ...SHARED_SCOPES]
+
+  // Auto-detect from Quartz's package.json
+  const quartzPkgPath = path.join(process.cwd(), "package.json")
+  if (fs.existsSync(quartzPkgPath)) {
+    try {
+      const pkg = JSON.parse(fs.readFileSync(quartzPkgPath, "utf-8"))
+      const deps = Object.keys(pkg.dependencies ?? {})
+      for (const dep of deps) {
+        if (!externals.includes(dep)) {
+          externals.push(dep)
+        }
+      }
+    } catch {
+      // Fall back to explicit list only
+    }
+  }
+
+  _sharedExternalsCache = externals
+  return externals
+}
+
+/**
+ * Check whether an import specifier is an allowed external for a plugin.
+ * Allowed externals are: Node builtins, shared externals (singletons +
+ * Quartz deps + shared scopes), and the plugin's own declared peerDependencies.
+ */
 function isAllowedExternal(specifier: string, pluginPeerDeps: string[]): boolean {
   if (specifier.startsWith("node:")) return true
 
   const bare = specifier.split("/")[0]
   if (NODE_BUILTINS.has(bare)) return true
 
-  if (SHARED_EXTERNALS.some((prefix) => specifier.startsWith(prefix))) return true
+  const sharedExternals = getSharedExternals()
+  if (sharedExternals.some((prefix) => specifier.startsWith(prefix))) return true
 
   if (pluginPeerDeps.some((dep) => specifier === dep || specifier.startsWith(dep + "/"))) {
     return true
@@ -779,7 +857,7 @@ function isAllowedExternal(specifier: string, pluginPeerDeps: string[]): boolean
 export function validatePluginExternals(
   pluginName: string,
   entryPoint: string,
-  options?: { verbose?: boolean },
+  _options?: { verbose?: boolean },
 ): string[] {
   try {
     const content = fs.readFileSync(entryPoint, "utf-8")
@@ -809,12 +887,13 @@ export function validatePluginExternals(
 
     const unique = [...new Set(unexpected)]
 
-    if (unique.length > 0 && options?.verbose) {
-      console.warn(
-        styleText("yellow", `⚠`) +
-          ` Plugin ${styleText("cyan", pluginName)} has unbundled external imports that may fail at runtime:\n` +
+    if (unique.length > 0) {
+      console.error(
+        styleText("red", `✗`) +
+          ` Plugin ${styleText("cyan", pluginName)} has unbundled external imports that will fail at runtime:\n` +
           unique.map((s) => `  - ${s}`).join("\n") +
-          `\n  These packages are not provided by Quartz. The plugin should bundle them into dist/.`,
+          `\n  These packages are not provided by Quartz. The plugin must bundle them into dist/.` +
+          `\n  In the plugin's tsup.config.ts, add these to noExternal or remove the imports.`,
       )
     }
 

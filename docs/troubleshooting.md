@@ -64,6 +64,9 @@ This means the plugin is referenced in `quartz.ts` but not installed. Either:
 
 ### Plugins fail to build on a fresh clone
 
+> [!important]
+> Most community plugins now ship with a pre-built `dist/` directory and skip the build step entirely. The build failure scenario described below mainly applies to plugins in development or older plugins that haven't adopted pre-built distribution.
+
 On a brand-new clone, `npx quartz plugin install` (or the plugin step run automatically by `npx quartz create`) may report a handful of plugins failing to build — typically around 10–15 of them. The git clone and checkout still succeed, but `npm run build` inside the plugin errors out.
 
 This happens because `quartz.lock.json` pins each plugin to a specific commit, and those older plugin commits may have been authored against earlier versions of `@quartz-community/types` / `@quartz-community/utils` whose published artifacts are no longer shipped in the dependency's git repo. The plugin's `tsup`/`tsc` build then cannot resolve the expected type declarations.
@@ -77,6 +80,9 @@ npx quartz plugin install --latest
 This rewrites `quartz.lock.json` with the newest commits (which in turn pin newer `@quartz-community/*` versions whose built output is available), and rebuilds every plugin from scratch. After this step, subsequent `npx quartz plugin install` calls will restore cleanly from the refreshed lockfile.
 
 ### `plugin install` hangs, OOMs, or fails on low-end hardware
+
+> [!note]
+> Pre-built plugins are much faster and lighter on resources because they skip the `npm install` and `npm run build` steps.
 
 By default, `npx quartz plugin install` clones, fetches, and builds plugins in parallel across all your CPU cores. Each parallel worker may run its own `npm install` and `npm run build`, which is memory-intensive. On low-end laptops, Raspberry Pi, small VPS instances, or restrictive CI runners this can exhaust RAM, trigger the OOM killer, or make the system appear to hang.
 
