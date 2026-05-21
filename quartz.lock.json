@@ -194,9 +194,9 @@
         "subdir": "plugin"
       },
       "resolved": "https://github.com/saberzero1/quartz-themes.git",
-      "commit": "ef93b2a0a188fd05afa02bb28ded69e38a5086ef",
+      "commit": "68c3bf8877d81c38bd8c58473de2de1075b9470c",
       "subdir": "plugin",
-      "installedAt": "2026-05-20T23:46:00.301Z"
+      "installedAt": "2026-05-21T11:31:34.882Z"
     },
     "reader-mode": {
       "source": "github:quartz-community/reader-mode",
