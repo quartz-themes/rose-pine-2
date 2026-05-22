@@ -76,8 +76,8 @@
     "crawl-links": {
       "source": "github:quartz-community/crawl-links",
       "resolved": "https://github.com/quartz-community/crawl-links.git",
-      "commit": "0218662b7fdff9911c4869199e5e265452951b21",
-      "installedAt": "2026-05-16T20:01:33.591Z"
+      "commit": "f96e631d92031f3265f878b6c5a7a43467331c1e",
+      "installedAt": "2026-05-22T00:59:15.665Z"
     },
     "created-modified-date": {
       "source": "github:quartz-community/created-modified-date",
@@ -194,9 +194,9 @@
         "subdir": "plugin"
       },
       "resolved": "https://github.com/saberzero1/quartz-themes.git",
-      "commit": "3b2835d11bbf5699c52a7f8e20b6eacffe21c82d",
+      "commit": "4f9b5d11319c02c9bb74bf6b28cfecaa261fe92d",
       "subdir": "plugin",
-      "installedAt": "2026-05-21T23:36:41.309Z"
+      "installedAt": "2026-05-22T02:03:49.889Z"
     },
     "reader-mode": {
       "source": "github:quartz-community/reader-mode",
