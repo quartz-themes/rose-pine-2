@@ -1,8 +1,12 @@
 ---
 title: Explorer
+description: File tree explorer sidebar.
 tags:
   - plugin/component
 image:
+repository: "[quartz-community/explorer](https://github.com/quartz-community/explorer)"
+enabled: true
+required: false
 ---
 
 File tree explorer sidebar.
@@ -47,6 +51,7 @@ This plugin accepts the following configuration options:
 ```ts title="quartz.ts"
 import * as ExternalPlugin from "./.quartz/plugins"
 
+// Must be placed before loadQuartzConfig()
 ExternalPlugin.Explorer({
   mapFn: (node) => {
     node.displayName = node.displayName.toUpperCase()

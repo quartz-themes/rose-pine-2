@@ -1,8 +1,12 @@
 ---
 title: Description
+description: Generates page descriptions for metadata and previews.
 tags:
   - plugin/transformer
 image:
+repository: "[quartz-community/description](https://github.com/quartz-community/description)"
+enabled: true
+required: false
 ---
 
 This plugin generates descriptions that are used as metadata for the HTML `head`, the [[RSS Feed]] and in [[folder and tag listings]] if there is no main body content, the description is used as the text between the title and the listing.

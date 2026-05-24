@@ -1,8 +1,12 @@
 ---
 title: Graph
+description: Interactive link graph visualization.
 tags:
   - plugin/component
 image:
+repository: "[quartz-community/graph](https://github.com/quartz-community/graph)"
+enabled: true
+required: false
 ---
 
 Interactive graph visualization.

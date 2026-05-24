@@ -1,8 +1,12 @@
 ---
 title: TagPage
+description: Generates listing pages for tags.
 tags:
   - plugin/pageType
 image:
+repository: "[quartz-community/tag-page](https://github.com/quartz-community/tag-page)"
+enabled: true
+required: false
 ---
 
 This plugin is a page type plugin that emits dedicated pages for each tag used in the content. It uses the `default` [[layout#Page Frames|page frame]] (three-column layout with sidebars). See [[folder and tag listings]] for more information.
