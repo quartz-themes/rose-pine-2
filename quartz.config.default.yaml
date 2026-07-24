@@ -7,7 +7,7 @@ configuration:
   analytics:
     provider: plausible
   locale: en-US
-  baseUrl: quartz-themes.github.io/rose-pine-2
+  baseUrl: quartz.jzhao.xyz
   ignorePatterns:
     - private
     - templates
@@ -103,7 +103,7 @@ plugins:
   - source: "@quartz-themes/core"
     enabled: false
     options:
-      theme: rose-pine-2
+      theme: tokyo-night
       mode: both
   - source: "@quartz-community/remove-draft"
     enabled: true
