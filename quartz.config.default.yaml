@@ -100,11 +100,6 @@ plugins:
     order: 92
   - source: "@quartz-community/quartz-fonts"
     enabled: true
-  - source: "@quartz-themes/core"
-    enabled: false
-    options:
-      theme: rose-pine-2
-      mode: both
   - source: "@quartz-community/remove-draft"
     enabled: true
   - source: "@quartz-community/explicit-publish"
@@ -258,6 +253,11 @@ plugins:
       position: afterBody
       priority: 50
       display: all
+  - source: "@quartz-themes/core"
+    enabled: true
+    options:
+      theme: rose-pine-2
+      variation: null
 layout:
   groups:
     toolbar:

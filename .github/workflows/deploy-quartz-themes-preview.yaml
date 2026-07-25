@@ -9,7 +9,7 @@ on:
       - v5
 
 permissions:
-  contents: write
+  contents: read
   pages: write
   id-token: write
 
@@ -29,16 +29,6 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           node-version: 24
-      - name: Update Quartz
-        run: |
-          git config pull.rebase >&- || git config pull.rebase false 
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "github-actions[bot]"
-          git config remote.template.url >&- || git remote add template https://github.com/quartz-themes/quartz-themes-preview-template.git
-          git pull template v5 -X theirs --no-edit
-          git pull origin v5 -X theirs --no-edit
-          git push || git push --force
-
       # - name: Cache dependencies
       #   uses: actions/cache@v5
       #   with:
